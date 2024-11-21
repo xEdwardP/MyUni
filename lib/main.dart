@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
-import 'Pages/login_page.dart';
+import 'package:provider/provider.dart';
+import 'models/login_model.dart';
+import 'screens/login_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => LoginModel(),
+      child: MyApp(),
+    ),
+  );
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Login App',
-      initialRoute: '/login',
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
       routes: {
-        '/login': (context) => const LoginPage(),
+        '/': (context) => LoginScreen(),
+        '/home': (context) => HomeScreen(),
       },
     );
   }
