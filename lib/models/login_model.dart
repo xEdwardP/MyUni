@@ -39,4 +39,9 @@ class LoginModel with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void logout() {
+    _isLoggedIn = false;
+    notifyListeners();
+  }
 }

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:myuni/utils/AppColors.dart';
 import 'package:myuni/widgets/custom_drawer.dart';
+import 'package:myuni/utils/AppColors.dart';
 
-class HomeScreen extends StatelessWidget {
+class BooksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pantalla Principal'),
+        title: Text('Catálogo de Libros'),
         backgroundColor: AppColors.primary,
       ),
       drawer: CustomDrawer(),
       body: Center(
         child: Text(
-          '¡Bienvenido a la pantalla principal!',
+          'Aquí se mostrará el catálogo de libros.',
           style: TextStyle(fontSize: 24),
         ),
       ),

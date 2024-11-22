@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'models/login_model.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/books_screen.dart';
+import 'screens/loans_screen.dart';
+import 'screens/returns_screen.dart';
 
 void main() {
   runApp(
@@ -18,10 +21,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
-        '/': (context) => LoginScreen(),
+        '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
+        '/books': (context) => BooksScreen(),
+        '/loans': (context) => LoansScreen(),
+        '/returns': (context) => ReturnsScreen(),
       },
     );
   }
