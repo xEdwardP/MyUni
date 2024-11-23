@@ -15,5 +15,5 @@ class AppColors {
   static const Color textSecondary =
       Color(0xffFDB913); // Amarillo de las llaves
   static const Color error =
-      Color.fromARGB(255, 255, 0, 8); // Rojo de las cintas
+      Color.fromARGB(255, 206, 0, 7); // Rojo de las cintas
 }
