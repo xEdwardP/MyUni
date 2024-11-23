@@ -21,10 +21,34 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menú Principal'),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.home,
+              size: 28,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Menu Principal',
+              style: TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
         centerTitle: true,
         elevation: 4.0,
         backgroundColor: AppColors.secondary,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
       drawer: CustomDrawer(),
       body: Padding(

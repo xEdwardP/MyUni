@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:myuni/utils/AppColors.dart';
+import 'package:myuni/utils/drawer_item.dart';
 import 'package:provider/provider.dart';
 import 'package:myuni/models/login_model.dart';
-import 'package:myuni/utils/AppColors.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
@@ -12,49 +13,61 @@ class CustomDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          // User Card
+          UserAccountsDrawerHeader(
+            decoration: const BoxDecoration(
               color: AppColors.secondary,
-            ),
-            child: Text(
-              'Biblioteca UNICAH',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+              image: DecorationImage(
+                image: AssetImage('assets/background.jpg'), // Background
+                fit: BoxFit.cover,
               ),
             ),
+            accountName: const Text(
+              'Dexter Morgan',
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            accountEmail: Text(
+              loginModel.email,
+              style: const TextStyle(color: Colors.white70),
+            ),
+            currentAccountPicture: CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.white,
+              backgroundImage: const AssetImage('assets/user.png'), // Userphoto
+              child: loginModel.email.isEmpty
+                  ? const Icon(
+                      Icons.person,
+                      size: 50,
+                      color: AppColors.secondary,
+                    )
+                  : null,
+            ),
           ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Inicio'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/home');
-            },
+          DrawerItem(
+            icon: Icons.home,
+            title: 'Inicio',
+            routeName: '/home',
           ),
-          ListTile(
-            leading: const Icon(Icons.book),
-            title: const Text('Libros'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/books');
-            },
+          DrawerItem(
+            icon: Icons.book,
+            title: 'Libros',
+            routeName: '/books',
           ),
-          ListTile(
-            leading: const Icon(Icons.bookmark),
-            title: const Text('Gestión de Préstamos'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/loans');
-            },
+          DrawerItem(
+            icon: Icons.bookmark,
+            title: 'Gestión de Préstamos',
+            routeName: '/loans',
           ),
-          ListTile(
-            leading: const Icon(Icons.assignment_return),
-            title: const Text('Gestión de Devoluciones'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/returns');
-            },
+          DrawerItem(
+            icon: Icons.assignment_return,
+            title: 'Gestión de Devoluciones',
+            routeName: '/returns',
           ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Cerrar Sesión'),
+          const Divider(),
+          DrawerItem(
+            icon: Icons.logout,
+            title: 'Cerrar Sesión',
+            routeName: '/login',
             onTap: () {
               loginModel.logout();
               Navigator.pushReplacementNamed(context, '/login');
