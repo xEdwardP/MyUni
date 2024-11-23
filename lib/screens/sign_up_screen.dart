@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
+//clase de registro
 class SignUpScreen extends StatelessWidget {
  
  static String id = "SingUpPage";
 
  @override
 
-//formato principal
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -15,52 +15,48 @@ class SignUpScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //titulo de la pagina
-              Text("Crea una Cuenta",
+              
+              Row(
+        children: [
+            Text("BIBLIOTECA UNICAH",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color.fromARGB(255, 0, 0, 0),
-                fontSize: 40,
+                fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
+            ),
+             Text("Crea una Cuenta",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color.fromARGB(255, 0, 0, 0),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
               ),
-              //espacio entre widgets
-
+            ),
+        ]  
+              ),
+              
+           //metodos de los textbox
               SizedBox(height: 25.0,),
-              //metodo para el nombre
               _textFleldName(),
                SizedBox(height: 15.0,),
-               //metodo para el email
               _textFleldEmail(),
               SizedBox(height: 15.0,),
-              //metodo para la contrasena
               _textFleldPassword(),
-            
-
-
-              
-              //Retornar a login
-                 Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                       Text(
-                        '¿Ya tienes una cuenta?',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                        ),
-                       ),
-                   
-                      Text('¡Inicia Sesión!',
-                       style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.amber[50],
-                       ),
-                      ),
-                      
-                    ],
-              
+             SizedBox(height: 15.0,),
+             Row(
+              children: [
+                  Text('¿Ya tienes una cuenta?',
+                    style: TextStyle(
+                      color: Colors.amber[50],
+                      fontSize: 20,
+                    ),
                   ),
+                  _buttonsLogin(),
+              ],
+             )
+             
     
             ],
           ),
@@ -68,56 +64,104 @@ class SignUpScreen extends StatelessWidget {
       ),
     );
   }
-  
-  //metodos retornados con widget
- Widget _textFleldPassword() {
+  //metodo del nombre
+  Widget _textFleldName() {
 
-  return _textFieldGeneral();
- }
-
-
+    return _TextFieldGeneral(
+      labelText: 'Nombre',
+      hintText: 'Jose Alvarado',
+      onChanged: (value){},
+    );
+    
+  }
+  //metodo del email
   
  Widget _textFleldEmail() {
-  return TextField();
+  return _TextFieldGeneral(
+    labelText: 'Email',
+    hintText: 'Example@gmail.com',
+    keyboardType: TextInputType.emailAddress,
+    onChanged: (value){},
+    icon: Icons.email_outlined,
+     );
  }
+ //metodo de la contraseña
   
- Widget _textFleldName() {
-  return TextField();
+ Widget _textFleldPassword() {
+  return _TextFieldGeneral(
+    labelText: 'Contraseña',
+    onChanged: (value){},
+    icon: Icons.lock_outline_rounded,
+    obscuretext: true,
+  );
  }
+ 
+ //metodo del boton de inicio de sesion
+  Widget _buttonsLogin() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromARGB(0, 255, 255, 255), 
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 110.0,vertical: 10),
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+      
+      onPressed: (){
+    
+      }, 
+
+    child: Text('Inicia Sesión',
+    style: TextStyle(
+    color: Colors.amber[50],
+    fontSize: 20,
+      ),
+    ),
+
+    ); 
+  }
+  
 }
 
-//clase de textbox
-class _textFieldGeneral extends StatelessWidget {
+class _TextFieldGeneral extends StatelessWidget {
   final String labelText;
   final String hintText;
-  final Fuction onChanged;
+  final Function(String) onChanged;
+  final TextInputType? keyboardType;
+  final IconData? icon;
+  final bool obscuretext;
 
-  const _textFieldGeneral(({
-    this.labelTex,t
-    this.hintText,
-    this.onChanged,
-    }),
+  const _TextFieldGeneral({
+   required this.labelText,
+    this.hintText='',
+    required this.onChanged,
+    this.keyboardType,
+    this.icon,
+    this.obscuretext=false,
+
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-       margin: EdgeInsets.symmetric(
-        horizontal: 30,
+      margin: EdgeInsets.symmetric(
+        horizontal: 30.0,
       ),
-      decoration: BoxDecoration(
-          color: Colors.white,
+       color: Colors.white,
+       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-      ),
+       ),
       child: TextField(
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.person_outline),
-        labelText: "Nombre",
-        hintText: "José Alvarado",
+        keyboardType: keyboardType,
+        obscureText: obscuretext,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon),
+          labelText: "labelText",
+          hintText: "hintText",
         ),
-        onChanged: (value){},
+        onChanged: onChanged,
       ),
     );
   }
 }
-
