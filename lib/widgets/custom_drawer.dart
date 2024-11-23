@@ -12,12 +12,12 @@ class CustomDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
+          const DrawerHeader(
             decoration: BoxDecoration(
-              color: AppColors.primary,
+              color: AppColors.secondary,
             ),
             child: Text(
-              'Menú Principal',
+              'Biblioteca UNICAH',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
@@ -25,36 +25,36 @@ class CustomDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.book),
-            title: Text('Libros'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/books');
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.bookmark),
-            title: Text('Gestión de Préstamos'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/loans');
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.assignment_return),
-            title: Text('Gestión de Devoluciones'),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/returns');
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Inicio'),
+            leading: const Icon(Icons.home),
+            title: const Text('Inicio'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/home');
             },
           ),
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Cerrar Sesión'),
+            leading: const Icon(Icons.book),
+            title: const Text('Libros'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/books');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.bookmark),
+            title: const Text('Gestión de Préstamos'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/loans');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.assignment_return),
+            title: const Text('Gestión de Devoluciones'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/returns');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Cerrar Sesión'),
             onTap: () {
               loginModel.logout();
               Navigator.pushReplacementNamed(context, '/login');

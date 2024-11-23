@@ -3,7 +3,7 @@ import 'package:myuni/widgets/custom_drawer.dart';
 import 'package:myuni/utils/AppColors.dart';
 
 class BooksScreen extends StatefulWidget {
-  const BooksScreen({Key? key}) : super(key: key);
+  const BooksScreen({Key? key});
 
   @override
   _BooksScreenState createState() => _BooksScreenState();
@@ -15,21 +15,24 @@ class _BooksScreenState extends State<BooksScreen> {
       'title': 'El Quijote',
       'author': 'Miguel de Cervantes',
       'category': 'Clásicos',
-      'description': 'Publicada en dos partes, en 1605 y 1615, es una de las obras más destacadas de la literatura española y universal. Narra las aventuras de un hidalgo que, influido por los libros de caballería, decide convertirse en caballero andante.',
+      'description':
+          'Publicada en dos partes, en 1605 y 1615, es una de las obras más destacadas de la literatura española y universal. Narra las aventuras de un hidalgo que, influido por los libros de caballería, decide convertirse en caballero andante.',
       'image': 'panesito123'
     },
     {
       'title': 'Cien Años de Soledad',
       'author': 'Gabriel García Márquez',
       'category': 'Ficción',
-      'description': 'Es una novela publicada en 1967 y es considerada una obra maestra de la literatura hispanoamericana y universal. La historia relata la vida de la familia Buendía en el ficticio pueblo de Macondo a lo largo de siete generaciones.',
+      'description':
+          'Es una novela publicada en 1967 y es considerada una obra maestra de la literatura hispanoamericana y universal. La historia relata la vida de la familia Buendía en el ficticio pueblo de Macondo a lo largo de siete generaciones.',
       'image': 'panesito123'
     },
     {
       'title': 'Donde los Árboles Cantan',
       'author': 'Laura Gallego',
       'category': 'Fantasía',
-      'description': 'Publicada en 2011, esta novela de fantasía juvenil narra la historia de Viana, una joven noble que se embarca en una aventura para salvar su reino y descubre un misterioso bosque donde los árboles cantan.',
+      'description':
+          'Publicada en 2011, esta novela de fantasía juvenil narra la historia de Viana, una joven noble que se embarca en una aventura para salvar su reino y descubre un misterioso bosque donde los árboles cantan.',
       'image': 'panesito123'
     },
   ];

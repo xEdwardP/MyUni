@@ -1,21 +1,6 @@
 import 'package:flutter/material.dart';
-
-
-void main() {
-  runApp(BibliotecaApp());
-}
-
-class BibliotecaApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Biblioteca Universitaria',
-      theme: ThemeData(primarySwatch: Colors.purple),
-      home: HomeScreen(),
-    );
-  }
-}
+import 'package:myuni/utils/AppColors.dart';
+import 'package:myuni/widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   final Map<String, int> prestamosPorDia = {
@@ -33,61 +18,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int totalPrestamos = calcularTotalPrestamos();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Biblioteca'),
+        title: const Text('Menu Principal'),
         centerTitle: true,
         elevation: 4.0,
-        backgroundColor: Colors.purple.shade700,
+        backgroundColor: AppColors.secondary,
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.teal,
-              ),
-              child: Text(
-                'Menú de Opciones',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.book),
-              title: Text('Catálogo de Libros'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.history),
-              title: Text('Historial de Préstamos'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Configuración'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Cerrar Sesión'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: CustomDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -104,7 +42,7 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.purple.shade800,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 'Consulta tus estadísticas y los libros prestados',
                 textAlign: TextAlign.center,
@@ -113,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.grey[700],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Resumen numérico
               Card(
                 elevation: 3,
@@ -125,15 +63,15 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      Text(
+                      const Text(
                         'Total de libros prestados esta semana:',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 18),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         '$totalPrestamos',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                           color: Colors.teal,
@@ -143,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Gráfico de barras
               Text(
                 'Préstamos por día:',
@@ -154,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.purple.shade800,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
@@ -175,9 +113,9 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             Text(
                               '$prestamos',
-                              style: TextStyle(fontSize: 14),
+                              style: const TextStyle(fontSize: 14),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Container(
                               width: 24,
                               height: alturaBarra,
@@ -186,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
                               dia.substring(0, 3),
                               style: TextStyle(
@@ -198,7 +136,7 @@ class HomeScreen extends StatelessWidget {
                         );
                       }).toList(),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       'Distribución de préstamos por día',
                       textAlign: TextAlign.center,
@@ -217,7 +155,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-

@@ -31,8 +31,8 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gestión de Devoluciones'),
-        backgroundColor: AppColors.primary,
+        title: const Text('Gestión de Devoluciones'),
+        backgroundColor: AppColors.secondary,
       ),
       drawer: CustomDrawer(),
       body: Padding(
@@ -40,27 +40,26 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Registrar Devolución',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             TextField(
               controller: _bookIdController,
-              decoration: InputDecoration(labelText: 'ID del Libro'),
+              decoration: const InputDecoration(labelText: 'ID del Libro'),
             ),
             TextField(
               controller: _studentIdController,
-              decoration: InputDecoration(labelText: 'ID del Estudiante'),
+              decoration: const InputDecoration(labelText: 'ID del Estudiante'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _addReturn,
               child: Text('Registrar'),
-              style: ElevatedButton.styleFrom(
-              ),
+              style: ElevatedButton.styleFrom(),
             ),
             Divider(height: 20, thickness: 2),
-            Text(
+            const Text(
               'Historial de Devoluciones',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),

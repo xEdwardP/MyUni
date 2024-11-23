@@ -7,11 +7,11 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pantalla de registro'),
+        title: const Text('Pantalla de registro'),
         backgroundColor: AppColors.primary,
       ),
       drawer: CustomDrawer(),
-      body: Center(
+      body: const Center(
         child: Text(
           '¡Registra tu nueva cuenta!',
           style: TextStyle(fontSize: 24),
