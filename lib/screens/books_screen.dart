@@ -29,9 +29,34 @@ class _BooksScreenState extends State<BooksScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Libros'),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.book,
+              size: 28,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Libros',
+              style: TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
         centerTitle: true,
+        elevation: 4.0,
         backgroundColor: AppColors.secondary,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
       drawer: CustomDrawer(),
       body: Padding(
