@@ -3,7 +3,7 @@ import 'package:myuni/widgets/custom_drawer.dart';
 import 'package:myuni/utils/AppColors.dart';
 
 class BooksScreen extends StatefulWidget {
-  const BooksScreen({Key? key}) : super(key: key);
+  const BooksScreen({Key? key});
 
   @override
   _BooksScreenState createState() => _BooksScreenState();
@@ -29,6 +29,7 @@ class _BooksScreenState extends State<BooksScreen> {
       'title': 'Donde los Árboles Cantan',
       'author': 'Laura Gallego',
       'category': 'Fantasía',
+
       'description': 'Publicada en 2011, esta novela de fantasía juvenil narra la historia de Viana, una joven noble que se embarca en una aventura para salvar su reino y descubre un misterioso bosque donde los árboles cantan.',
       'image': 'https://images-eu.ssl-images-amazon.com/images/I/91gYns+sNGL._AC_UL600_SR600,600_.jpg'
     },
@@ -144,7 +145,7 @@ class _BooksScreenState extends State<BooksScreen> {
                             book['author']!.toLowerCase().contains(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     }).toList();
-
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('Biblioteca App'),
@@ -158,11 +159,13 @@ class _BooksScreenState extends State<BooksScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
+
               onChanged: (value) {
                 setState(() {
                   searchQuery = value;
                 });
               },
+              
               decoration: InputDecoration(
                 hintText: 'Buscar libros...',
                 prefixIcon: Icon(Icons.search),
@@ -175,7 +178,9 @@ class _BooksScreenState extends State<BooksScreen> {
 
             Text(
               'Categorías',
+
 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
             ),
             SizedBox(height: 10),
             SizedBox(
@@ -206,6 +211,7 @@ style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   CategoryChip(
                     label: 'Clásicos',
                     isSelected: selectedCategory == 'Clásicos',
+
                     onTap: () => setState(() => selectedCategory = 'Clásicos'),
                   ),
                 ],

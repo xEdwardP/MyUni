@@ -25,12 +25,18 @@ class LoginModel with ChangeNotifier {
   }
 
   void login(BuildContext context) {
+    String user = 'epineda@yopmail.com', pass = '12345678';
+
     if (email.contains('@') &&
         (email.endsWith('.com') || email.endsWith('.es'))) {
       if (password.length >= 6) {
-        _isLoggedIn = true;
-        notifyListeners();
-        Navigator.pushReplacementNamed(context, '/home');
+        if (email == user && password == pass) {
+          _isLoggedIn = true;
+          notifyListeners();
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          _isLoggedIn = false;
+        }
       } else {
         _isLoggedIn = false;
       }
