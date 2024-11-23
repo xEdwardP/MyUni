@@ -6,6 +6,7 @@ class SignUpScreen extends StatelessWidget {
 
  @override
 
+//formato principal
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -14,6 +15,7 @@ class SignUpScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              //titulo de la pagina
               Text("Crea una Cuenta",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -22,17 +24,22 @@ class SignUpScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
               ),
+              //espacio entre widgets
+
               SizedBox(height: 25.0,),
+              //metodo para el nombre
               _textFleldName(),
                SizedBox(height: 15.0,),
+               //metodo para el email
               _textFleldEmail(),
               SizedBox(height: 15.0,),
+              //metodo para la contrasena
               _textFleldPassword(),
             
 
 
               
-              
+              //Retornar a login
                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -62,6 +69,7 @@ class SignUpScreen extends StatelessWidget {
     );
   }
   
+  //metodos retornados con widget
  Widget _textFleldPassword() {
 
   return _textFieldGeneral();
@@ -78,6 +86,7 @@ class SignUpScreen extends StatelessWidget {
  }
 }
 
+//clase de textbox
 class _textFieldGeneral extends StatelessWidget {
   final String labelText;
   final String hintText;
@@ -111,3 +120,4 @@ class _textFieldGeneral extends StatelessWidget {
     );
   }
 }
+

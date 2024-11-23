@@ -12,18 +12,26 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final loginModel = Provider.of<LoginModel>(context);
+
+    void _clear() {
+      emailController.clear();
+      passwordController.clear();
+    }
 
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(colors: <Color>[
-            AppColors.background,
-            AppColors.background,
-            AppColors.secondary,
-            AppColors.primary,
+            AppColors.loginPrimary,
+            AppColors.loginSecundary,
+            AppColors.loginThird,
+            AppColors.loginFourth,
           ], begin: Alignment.topLeft, end: Alignment.bottomRight),
         ),
         child: SafeArea(
@@ -32,12 +40,18 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   // Icon
-                  const Icon(
-                    Icons.account_circle,
-                    size: 200,
-                    color: AppColors.primary,
+                  // const Icon(
+                  //   Icons.account_circle,
+                  //   size: 200,
+                  //   color: AppColors.primary,
+                  // ),
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 300,
                   ),
-                  const SizedBox(height: 20),
+
+                  const SizedBox(height: 5),
+
                   // Hello Text
                   Text(
                     'INICIAR SESIÓN',
@@ -50,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontSize: 18,
                         color: AppColors.primary,
                       )),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
 
                   // Email textfield
                   Padding(
@@ -105,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: AppColors.accent,
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Center(
@@ -126,13 +140,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Login Status Message
                   if (loginModel.isLoggedIn)
                     const Text(
-                      'Login Successful',
+                      'Inicio exitoso!',
                       style: TextStyle(color: Colors.green),
                     )
                   else if (loginModel.email.isNotEmpty ||
                       loginModel.password.isNotEmpty)
                     const Text(
-                      'Login Failed',
+                      'Credenciales invalidas!',
                       style: TextStyle(color: Colors.red),
                     ),
 

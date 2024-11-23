@@ -7,11 +7,11 @@ class LoansScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gestión de Préstamos'),
-        backgroundColor: AppColors.primary,
+        title: const Text('Gestión de Préstamos'),
+        backgroundColor: AppColors.secondary,
       ),
       drawer: CustomDrawer(),
-      body: Center(
+      body: const Center(
         child: Text(
           'Aquí se gestionarán los préstamos de libros.',
           style: TextStyle(fontSize: 24),
