@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myuni/utils/AppColors.dart';
 
 class DrawerItem extends StatelessWidget {
   final IconData icon;
@@ -16,7 +17,8 @@ class DrawerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: Theme.of(context).primaryColor),
+      // leading: Icon(icon, color: Theme.of(context).primaryColor),
+      leading: Icon(icon, color: AppColors.primary),
       title: Text(title),
       onTap: () {
         if (onTap != null) {
