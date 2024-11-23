@@ -36,8 +36,34 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de Devoluciones'),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.assignment_return,
+              size: 28,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Devoluciones',
+              style: TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
+        centerTitle: true,
+        elevation: 4.0,
         backgroundColor: AppColors.secondary,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
       drawer: CustomDrawer(),
       body: SingleChildScrollView(
