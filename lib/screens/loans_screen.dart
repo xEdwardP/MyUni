@@ -7,8 +7,34 @@ class LoansScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de Préstamos'),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.bookmark,
+              size: 28,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Prestamos',
+              style: TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
+        centerTitle: true,
+        elevation: 4.0,
         backgroundColor: AppColors.secondary,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
       drawer: CustomDrawer(),
       body: const Center(

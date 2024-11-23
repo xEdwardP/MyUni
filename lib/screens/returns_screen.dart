@@ -12,7 +12,6 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   final _bookIdController = TextEditingController();
   final _studentIdController = TextEditingController();
 
-  // Lista inicial simulada de devoluciones realizadas
   final List<Map<String, String>> _returnsList = [
     {'bookId': '12345', 'studentId': '001', 'returnDate': '2024-11-20'},
     {'bookId': '67890', 'studentId': '002', 'returnDate': '2024-11-21'},
@@ -37,11 +36,36 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Título de la pantalla
-        title: Text('Gestión de Devoluciones'),
-        backgroundColor: AppColors.secondary, // Color personalizado para la app
+        title: const Row(
+          children: [
+            Icon(
+              Icons.assignment_return,
+              size: 28,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Devoluciones',
+              style: TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
+        centerTitle: true,
+        elevation: 4.0,
+        backgroundColor: AppColors.secondary,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
-      drawer: CustomDrawer(), // Menú lateral (drawer) personalizado
+      drawer: CustomDrawer(),
       body: SingleChildScrollView(
         // Permite que la pantalla sea desplazable en caso de contenido largo
         child: Padding(
@@ -49,16 +73,15 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start, // Alineación de texto
             children: [
-              // Título para la sección del formulario
-              Text(
+              const Text(
                 'Registrar Devolución',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primary, // Color principal
+                  color: AppColors.primary,
                 ),
               ),
-              SizedBox(height: 10), // Espaciado entre elementos
+              const SizedBox(height: 10), // Espaciado entre elementos
 
               // Tarjeta que contiene el formulario
               Card(
@@ -80,7 +103,7 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 10), // Espaciado entre campos
+                      const SizedBox(height: 10), // Espaciado entre campos
                       // Campo de texto para el Numero de Cuenta del estudiante
                       TextField(
                         controller: _studentIdController,
@@ -91,33 +114,33 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20), // Espaciado entre campos y botón
+                      const SizedBox(
+                          height: 20), // Espaciado entre campos y botón
 
                       // Botón para registrar una devolución
                       ElevatedButton.icon(
                         onPressed: _addReturn, // Ejecuta la función _addReturn
-                        icon: Icon(Icons.check_circle_outline), // Ícono del botón
-                        label: Text('Registrar'),
+                        icon: const Icon(
+                            Icons.check_circle_outline), // Ícono del botón
+                        label: const Text('Registrar'),
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 14, horizontal: 24), // Tamaño del botón
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          backgroundColor: AppColors.primary, // Color principal
+                          backgroundColor: AppColors.secondary,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 20), // Espaciado antes del historial
+              const SizedBox(height: 20),
 
-              // Línea divisoria entre secciones
-              Divider(height: 20, thickness: 2),
+              const Divider(height: 20, thickness: 2),
 
-              // Título para la sección del historial
-              Text(
+              const Text(
                 'Historial de Devoluciones',
                 style: TextStyle(
                   fontSize: 22,
@@ -125,28 +148,31 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
                   color: AppColors.primary,
                 ),
               ),
-              SizedBox(height: 10), // Espaciado entre el título y la lista
+              const SizedBox(height: 10),
 
               // Lista de devoluciones mostrada en tarjetas
               ListView.builder(
                 shrinkWrap: true, // Permite que la lista se adapte al contenido
-                physics: NeverScrollableScrollPhysics(), // Desactiva el scroll
-                itemCount: _returnsList.length, // Número de elementos en la lista
+                physics:
+                    const NeverScrollableScrollPhysics(), // Desactiva el scroll
+                itemCount:
+                    _returnsList.length, // Número de elementos en la lista
                 itemBuilder: (context, index) {
                   final returnItem = _returnsList[index]; // Elemento actual
                   return Card(
                     elevation: 3, // Sombra para resaltar la tarjeta
-                    margin: EdgeInsets.symmetric(vertical: 8), // Margen vertical
+                    margin: const EdgeInsets.symmetric(vertical: 8),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Bordes redondeados
+                      borderRadius:
+                          BorderRadius.circular(10), // Bordes redondeados
                     ),
                     child: ListTile(
-                      leading: Icon(Icons.book, color: AppColors.primary), // Ícono
-                      title: Text('Libro: ${returnItem['bookId']}'), // ID del libro
+                      leading: const Icon(Icons.book, color: AppColors.primary),
+                      title: Text('Libro: ${returnItem['bookId']}'),
                       subtitle: Text(
                         'Estudiante: ${returnItem['studentId']}\nFecha: ${returnItem['returnDate']}',
                       ), // Detalles adicionales
-                       // Flecha al final
+                      // Flecha al final
                     ),
                   );
                 },

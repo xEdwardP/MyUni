@@ -39,18 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Icon
-                  // const Icon(
-                  //   Icons.account_circle,
-                  //   size: 200,
-                  //   color: AppColors.primary,
-                  // ),
+                  // Logo
                   Image.asset(
                     'assets/logo.png',
                     height: 300,
                   ),
 
-                  const SizedBox(height: 5),
+                  // const SizedBox(height: 5),
 
                   // Hello Text
                   Text(
@@ -58,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: GoogleFonts.bebasNeue(
                         fontSize: 48, color: AppColors.primary),
                   ),
-                  const SizedBox(height: 5),
+                  // const SizedBox(height: 5),
                   const Text('¡Bienvenido de vuelta!',
                       style: TextStyle(
                         fontSize: 18,
@@ -141,33 +136,59 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (loginModel.isLoggedIn)
                     const Text(
                       'Inicio exitoso!',
-                      style: TextStyle(color: Colors.green),
+                      style: TextStyle(color: AppColors.primary),
                     )
                   else if (loginModel.email.isNotEmpty ||
                       loginModel.password.isNotEmpty)
                     const Text(
                       'Credenciales invalidas!',
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: AppColors.error),
                     ),
 
                   const SizedBox(height: 10),
 
                   // Register Text
+                  // const Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Text(
+                  //       '¿Aún no tienes una cuenta?',
+                  //       style: TextStyle(
+                  //           fontWeight: FontWeight.bold,
+                  //           color: AppColors.background),
+                  //     ),
+                  //     Text(
+                  //       ' ¡Regístrate aquí!',
+                  //       style: TextStyle(
+                  //           fontWeight: FontWeight.bold,
+                  //           color: AppColors.primary),
+                  //     ),
+                  //   ],
+                  // ),
+
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '¿Aún no tienes una cuenta?',
+                        'Sistema de Control Bibliotecario 2024',
                         style: TextStyle(
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: AppColors.background),
-                      ),
+                      )
+                    ],
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Text(
-                        ' ¡Regístrate aquí!',
+                        '© Todos los Derechos Reservados',
                         style: TextStyle(
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.accent),
-                      ),
+                            color: AppColors.background),
+                      )
                     ],
                   ),
                   const SizedBox(height: 10),
