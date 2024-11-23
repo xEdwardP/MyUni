@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:myuni/widgets/custom_drawer.dart';
 import 'package:myuni/utils/AppColors.dart';
+import 'package:myuni/widgets/custom_drawer.dart';
 
-class LoansScreen extends StatelessWidget {
+class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de Préstamos'),
-        backgroundColor: AppColors.secondary,
+        title: const Text('Pantalla de registro'),
+        backgroundColor: AppColors.primary,
       ),
       drawer: CustomDrawer(),
       body: const Center(
         child: Text(
-          'Aquí se gestionarán los préstamos de libros.',
+          '¡Registra tu nueva cuenta!',
           style: TextStyle(fontSize: 24),
         ),
       ),

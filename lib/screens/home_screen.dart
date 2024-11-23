@@ -1,21 +1,6 @@
 import 'package:flutter/material.dart';
-
-
-void main() {
-  runApp(BibliotecaApp());
-}
-
-class BibliotecaApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Biblioteca Universitaria',
-      theme: ThemeData(primarySwatch: Colors.purple),
-      home: HomeScreen(),
-    );
-  }
-}
+import 'package:myuni/utils/AppColors.dart';
+import 'package:myuni/widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   final Map<String, int> prestamosPorDia = {
@@ -36,188 +21,131 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Biblioteca'),
+        title: const Text('Menú Principal'),
         centerTitle: true,
         elevation: 4.0,
-        backgroundColor: Colors.purple.shade700,
+        backgroundColor: AppColors.secondary,
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+      drawer: CustomDrawer(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.teal,
+            Image.asset(
+              'assets/logo.png', 
+              height: 200, // Ajusta el tamaño de la imagen
+            ),
+            // Bienvenida
+            Text(
+              '¡Bienvenido a la Biblioteca Virtual UNICAH!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple.shade800,
               ),
-              child: Text(
-                'Menú de Opciones',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Mira las estadísticas de los Libros de biblioteca',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[700],
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.book),
-              title: Text('Catálogo de Libros'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.history),
-              title: Text('Historial de Préstamos'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Configuración'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Cerrar Sesión'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+            const SizedBox(height: 16),
+            // Cards compactas
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 1,
+                mainAxisSpacing: 1,
+                childAspectRatio: 1.5, // Relación ancho/alto de las tarjetas
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  buildCompactCard(
+                    icon: Icons.book,
+                    value: '$totalPrestamos',
+                    title: 'Libros Prestados',
+                    color: Colors.teal,
+                  ),
+                  buildCompactCard(
+                    icon: Icons.people,
+                    value: '120',
+                    title: 'Usuarios Activos',
+                    color: Colors.orange,
+                  ),
+                  buildCompactCard(
+                    icon: Icons.menu_book,
+                    value: '2500',
+                    title: 'Libros Disponibles',
+                    color: Colors.blue,
+                  ),
+                  buildCompactCard(
+                    icon: Icons.timer,
+                    value: '10',
+                    title: 'Préstamos Vencidos',
+                    color: Colors.red,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Bienvenida
-              Text(
-                '¡Bienvenido a la Biblioteca!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.purple.shade800,
+    );
+  }
+
+  Widget buildCompactCard({
+    required IconData icon,
+    required String value,
+    required String title,
+    required Color color,
+  }) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 70, // Ícono más pequeño
+                  color: color,
                 ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Consulta tus estadísticas y los libros prestados',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey[700],
-                ),
-              ),
-              SizedBox(height: 20),
-              // Resumen numérico
-              Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                color: Colors.purple.shade100,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Total de libros prestados esta semana:',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '$totalPrestamos',
-                        style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                        ),
-                      ),
-                    ],
+                const SizedBox(width: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 30, // Tamaño de texto reducido
+                    fontWeight: FontWeight.bold,
+                    color: color,
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20, // Texto más pequeño
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[700],
               ),
-              SizedBox(height: 20),
-              // Gráfico de barras
-              Text(
-                'Préstamos por día:',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.purple.shade800,
-                ),
-              ),
-              SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.purple.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: prestamosPorDia.entries.map((entry) {
-                        final String dia = entry.key;
-                        final int prestamos = entry.value;
-                        final double alturaBarra = prestamos.toDouble() * 4;
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              '$prestamos',
-                              style: TextStyle(fontSize: 14),
-                            ),
-                            SizedBox(height: 4),
-                            Container(
-                              width: 24,
-                              height: alturaBarra,
-                              decoration: BoxDecoration(
-                                color: Colors.purple.shade700,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              dia.substring(0, 3),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.teal.shade800,
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Distribución de préstamos por día',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey.shade700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-
-
-
