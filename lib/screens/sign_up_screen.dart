@@ -11,6 +11,7 @@ const SignUpScreen({super.key});
 State<SignUpScreen> createState()=> _SignScreenState();
 }
 
+//Add controllers
 class _SignScreenState extends State<SignUpScreen> {
   final TextEditingController name = TextEditingController();
   final TextEditingController email= TextEditingController();
