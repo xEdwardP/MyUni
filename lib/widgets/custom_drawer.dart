@@ -63,6 +63,11 @@ class CustomDrawer extends StatelessWidget {
             title: 'Gestión de Devoluciones',
             routeName: '/returns',
           ),
+          DrawerItem(
+            icon: Icons.list,
+            title: 'Asistencias',
+            routeName: '/attendances',
+          ),
           const Divider(),
           DrawerItem(
             icon: Icons.logout,

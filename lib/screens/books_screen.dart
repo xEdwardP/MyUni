@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myuni/data/books_data.dart';
+import 'package:myuni/screens/addbook_screen.dart';
 import 'package:myuni/widgets/book_card.dart';
 import 'package:myuni/widgets/category_chip.dart';
-import 'package:myuni/widgets/custom_drawer.dart';
 import 'package:myuni/utils/AppColors.dart';
+import 'package:myuni/widgets/custom_drawer.dart';
 
 class BooksScreen extends StatefulWidget {
   const BooksScreen({Key? key}) : super(key: key);
@@ -13,30 +14,6 @@ class BooksScreen extends StatefulWidget {
 }
 
 class _BooksScreenState extends State<BooksScreen> {
-  final List<Map<String, dynamic>> books = [
-    {
-      'title': 'El Quijote',
-      'author': 'Miguel de Cervantes',
-      'category': 'Clásicos',
-      'description':
-          'Publicada en dos partes, en 1605 y 1615, es una de las obras más destacadas de la literatura española y universal. Narra las aventuras de un hidalgo que, influido por los libros de caballería, decide convertirse en caballero andante.',
-      'image':
-          'https://m.media-amazon.com/images/I/71r22pLOqhL._AC_UF894,1000_QL80_.jpg',
-      'available': 10
-    },
-    {
-      'title': 'Cien Años de Soledad',
-      'author': 'Gabriel García Márquez',
-      'category': 'Ficción',
-      'description':
-          'Es una novela publicada en 1967 y es considerada una obra maestra de la literatura hispanoamericana y universal. La historia relata la vida de la familia Buendía en el ficticio pueblo de Macondo a lo largo de siete generaciones.',
-      'image':
-          'https://i0.wp.com/www.editorialelcuervo.com/wp-content/uploads/2022/02/17.-CIEN-ANOS-DE-SOLEDAD.jpg?fit=433%2C642&ssl=1',
-      'available': 8
-    },
-    // Otros libros truncados para brevedad
-  ];
-
   String selectedCategory = 'Todos';
   String searchQuery = '';
   int currentPage = 0;
@@ -47,22 +24,50 @@ class _BooksScreenState extends State<BooksScreen> {
     final filteredBooks = books.where((book) {
       final matchesCategory =
           selectedCategory == 'Todos' || book['category'] == selectedCategory;
-      final matchesSearch = book['title']!
-              .toLowerCase()
-              .contains(searchQuery.toLowerCase()) ||
-          book['author']!.toLowerCase().contains(searchQuery.toLowerCase());
+      final matchesSearch =
+          book['title']!.toLowerCase().contains(searchQuery.toLowerCase()) ||
+              book['author']!.toLowerCase().contains(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     }).toList();
 
-    final paginatedBooks = filteredBooks.skip(currentPage * itemsPerPage).take(itemsPerPage).toList();
+    final paginatedBooks = filteredBooks
+        .skip(currentPage * itemsPerPage)
+        .take(itemsPerPage)
+        .toList();
     final totalPages = (filteredBooks.length / itemsPerPage).ceil();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Libros'),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.home,
+              size: 28,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Menu Principal',
+              style: TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
         centerTitle: true,
-        backgroundColor: AppColors.primary,
+        elevation: 4.0,
+        backgroundColor: AppColors.secondary,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
+      drawer: CustomDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -76,11 +81,11 @@ class _BooksScreenState extends State<BooksScreen> {
             }
           });
         },
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
         backgroundColor: AppColors.secondary,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -92,7 +97,7 @@ class _BooksScreenState extends State<BooksScreen> {
               },
               decoration: InputDecoration(
                 hintText: 'Buscar libros...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -127,14 +132,12 @@ class _BooksScreenState extends State<BooksScreen> {
                   CategoryChip(
                     label: 'Fantasía',
                     isSelected: selectedCategory == 'Fantasía',
-                    onTap: () =>
-                        setState(() => selectedCategory = 'Fantasía'),
+                    onTap: () => setState(() => selectedCategory = 'Fantasía'),
                   ),
                   CategoryChip(
                     label: 'Clásicos',
                     isSelected: selectedCategory == 'Clásicos',
-                    onTap: () =>
-                        setState(() => selectedCategory = 'Clásicos'),
+                    onTap: () => setState(() => selectedCategory = 'Clásicos'),
                   ),
                 ],
               ),
@@ -197,158 +200,3 @@ class _BooksScreenState extends State<BooksScreen> {
     );
   }
 }
-
-class AddBookScreen extends StatelessWidget {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController authorController = TextEditingController();
-  final TextEditingController categoryController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController imageUrlController = TextEditingController();
-  final TextEditingController availableController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Agregar Nuevo Libro'),
-        backgroundColor: AppColors.secondary,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(labelText: 'Título'),
-            ),
-            TextField(
-              controller: authorController,
-              decoration: const InputDecoration(labelText: 'Autor'),
-            ),
-            TextField(
-              controller: categoryController,
-              decoration: const InputDecoration(labelText: 'Categoría'),
-            ),
-            TextField(
-              controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Descripción'),
-            ),
-            TextField(
-              controller: imageUrlController,
-              decoration: const InputDecoration(labelText: 'URL de la Imagen'),
-            ),
-            TextField(
-              controller: availableController,
-              decoration: const InputDecoration(labelText: 'Disponibles'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                final newBook = {
-                  'title': titleController.text,
-                  'author': authorController.text,
-                  'category': categoryController.text,
-                  'description': descriptionController.text,
-                  'image': imageUrlController.text,
-                  'available': int.tryParse(availableController.text) ?? 0,
-                };
-                Navigator.pop(context, newBook);
-              },
-              child: const Text('Agregar Libro'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CategoryChip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const CategoryChip({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        margin: const EdgeInsets.only(right: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blueAccent : Colors.blue[100],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
-              fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-}
-
-class BookCard extends StatelessWidget {
-  final String title;
-  final String author;
-  final String category;
-  final String description;
-  final String image;
-  final int available;
-
-  const BookCard({
-    required this.title,
-    required this.author,
-    required this.category,
-    required this.description,
-    required this.image,
-    required this.available,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 20),
-      child: Row(
-        children: [
-          Image.network(image, height: 100, width: 70, fit: BoxFit.cover),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Text(author, style: const TextStyle(color: Colors.grey)),
-                Text(
-                  category,
-                  style: const TextStyle(color: Colors.blueAccent),
-                ),
-                Text('Disponibles: $available'),
-                const SizedBox(height: 5),
-                Text(
-                  description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
