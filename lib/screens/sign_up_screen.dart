@@ -147,6 +147,7 @@ class _SignScreenState extends State<SignUpScreen> {
 
 //Class of Conditional TextBox
 
+
 class _TextFieldGeneral extends StatelessWidget {
   final String labelText;
   final String hintText;
@@ -154,7 +155,6 @@ class _TextFieldGeneral extends StatelessWidget {
   final TextInputType? keyboardType;
   final IconData? icon;
   final bool obscuretext;
-
 
   const  _TextFieldGeneral({
     required this.labelText,
@@ -167,17 +167,17 @@ class _TextFieldGeneral extends StatelessWidget {
 
 
 //Widget of Conditional
+ 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
-    child:
-     Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.black),
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 30.0,
+      ),
+       color: Colors.white,
+       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-      ) ,
-      margin: EdgeInsets.symmetric(horizontal: 30.0),
+       ),
       child: TextField(
         keyboardType: keyboardType,
         obscureText: obscuretext,
@@ -189,8 +189,6 @@ class _TextFieldGeneral extends StatelessWidget {
         ),
         onChanged: onChanged,
       ),
-    ), 
     );
-   
   }
 }

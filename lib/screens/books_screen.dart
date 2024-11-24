@@ -13,20 +13,18 @@ class BooksScreen extends StatefulWidget {
 }
 
 class _BooksScreenState extends State<BooksScreen> {
+
   String selectedCategory = 'Todos';
   String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
     final filteredBooks = books.where((book) {
-      final matchesCategory =
-          selectedCategory == 'Todos' || book['category'] == selectedCategory;
-      final matchesSearch =
-          book['title']!.toLowerCase().contains(searchQuery.toLowerCase()) ||
-              book['author']!.toLowerCase().contains(searchQuery.toLowerCase());
+      final matchesCategory = selectedCategory == 'Todos' || book['category'] == selectedCategory;
+      final matchesSearch = book['title']!.toLowerCase().contains(searchQuery.toLowerCase()) ||
+                            book['author']!.toLowerCase().contains(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     }).toList();
-
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -81,7 +79,9 @@ class _BooksScreenState extends State<BooksScreen> {
             const SizedBox(height: 20),
             const Text(
               'Categorías',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
+style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
             ),
             const SizedBox(height: 10),
             SizedBox(
