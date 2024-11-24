@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myuni/screens/attendance_student_screen.dart';
 import 'package:provider/provider.dart';
 import 'models/login_model.dart';
 import 'screens/login_screen.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/books': (context) => BooksScreen(),
         '/loans': (context) => LoansScreen(),
         '/returns': (context) => ReturnsScreen(),
+        '/attendances': (context) => AttendanceStudent(),
       },
     );
   }
