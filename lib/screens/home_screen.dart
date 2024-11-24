@@ -143,7 +143,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  size: 70, // Ícono más pequeño
+                  size: 30, // Ícono más pequeño
                   color: color,
                 ),
                 const SizedBox(width: 4),
