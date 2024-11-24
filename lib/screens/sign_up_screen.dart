@@ -16,6 +16,7 @@ class _SignScreenState extends State<SignUpScreen> {
   final TextEditingController email= TextEditingController();
   final TextEditingController password = TextEditingController();
 
+@override
     Widget build(BuildContext context) {
       final authservice = Provider.of<Authservice>(context);
     return SafeArea(
