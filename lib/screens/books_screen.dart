@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myuni/data/books_data.dart';
+import 'package:myuni/screens/addbook_screen.dart';
 import 'package:myuni/widgets/book_card.dart';
 import 'package:myuni/widgets/category_chip.dart';
-import 'package:myuni/widgets/custom_drawer.dart';
 import 'package:myuni/utils/AppColors.dart';
+import 'package:myuni/widgets/custom_drawer.dart';
 
 class BooksScreen extends StatefulWidget {
   const BooksScreen({Key? key}) : super(key: key);
@@ -13,30 +14,6 @@ class BooksScreen extends StatefulWidget {
 }
 
 class _BooksScreenState extends State<BooksScreen> {
-  final List<Map<String, dynamic>> books = [
-    {
-      'title': 'El Quijote',
-      'author': 'Miguel de Cervantes',
-      'category': 'Clásicos',
-      'description':
-          'Publicada en dos partes, en 1605 y 1615, es una de las obras más destacadas de la literatura española y universal. Narra las aventuras de un hidalgo que, influido por los libros de caballería, decide convertirse en caballero andante.',
-      'image':
-          'https://m.media-amazon.com/images/I/71r22pLOqhL._AC_UF894,1000_QL80_.jpg',
-      'available': 10
-    },
-    {
-      'title': 'Cien Años de Soledad',
-      'author': 'Gabriel García Márquez',
-      'category': 'Ficción',
-      'description':
-          'Es una novela publicada en 1967 y es considerada una obra maestra de la literatura hispanoamericana y universal. La historia relata la vida de la familia Buendía en el ficticio pueblo de Macondo a lo largo de siete generaciones.',
-      'image':
-          'https://i0.wp.com/www.editorialelcuervo.com/wp-content/uploads/2022/02/17.-CIEN-ANOS-DE-SOLEDAD.jpg?fit=433%2C642&ssl=1',
-      'available': 8
-    },
-    // Otros libros truncados para brevedad
-  ];
-
   String selectedCategory = 'Todos';
   String searchQuery = '';
   int currentPage = 0;
@@ -47,19 +24,35 @@ class _BooksScreenState extends State<BooksScreen> {
     final filteredBooks = books.where((book) {
       final matchesCategory =
           selectedCategory == 'Todos' || book['category'] == selectedCategory;
-      final matchesSearch = book['title']!
-              .toLowerCase()
-              .contains(searchQuery.toLowerCase()) ||
-          book['author']!.toLowerCase().contains(searchQuery.toLowerCase());
+      final matchesSearch =
+          book['title']!.toLowerCase().contains(searchQuery.toLowerCase()) ||
+              book['author']!.toLowerCase().contains(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     }).toList();
 
-    final paginatedBooks = filteredBooks.skip(currentPage * itemsPerPage).take(itemsPerPage).toList();
+    final paginatedBooks = filteredBooks
+        .skip(currentPage * itemsPerPage)
+        .take(itemsPerPage)
+        .toList();
     final totalPages = (filteredBooks.length / itemsPerPage).ceil();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Libros'),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.home,
+              size: 28,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Menu Principal',
+              style: TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
         centerTitle: true,
         backgroundColor: AppColors.primary,
       ),
@@ -80,7 +73,7 @@ class _BooksScreenState extends State<BooksScreen> {
         backgroundColor: AppColors.secondary,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -92,7 +85,7 @@ class _BooksScreenState extends State<BooksScreen> {
               },
               decoration: InputDecoration(
                 hintText: 'Buscar libros...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -127,14 +120,12 @@ class _BooksScreenState extends State<BooksScreen> {
                   CategoryChip(
                     label: 'Fantasía',
                     isSelected: selectedCategory == 'Fantasía',
-                    onTap: () =>
-                        setState(() => selectedCategory = 'Fantasía'),
+                    onTap: () => setState(() => selectedCategory = 'Fantasía'),
                   ),
                   CategoryChip(
                     label: 'Clásicos',
                     isSelected: selectedCategory == 'Clásicos',
-                    onTap: () =>
-                        setState(() => selectedCategory = 'Clásicos'),
+                    onTap: () => setState(() => selectedCategory = 'Clásicos'),
                   ),
                 ],
               ),
