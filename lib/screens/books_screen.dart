@@ -19,6 +19,94 @@ class _BooksScreenState extends State<BooksScreen> {
   int currentPage = 0;
   final int itemsPerPage = 5;
 
+  // Método para mostrar el diálogo modal de agregar libro
+  void _showAddBookDialog(BuildContext context) {
+    final titleController = TextEditingController();
+    final authorController = TextEditingController();
+    final categoryController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final imageUrlController = TextEditingController();
+    final availableController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'Agregar Nuevo Libro',
+          style: TextStyle(color: AppColors.primary),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Título'),
+              ),
+              TextField(
+                controller: authorController,
+                decoration: const InputDecoration(labelText: 'Autor'),
+              ),
+              TextField(
+                controller: categoryController,
+                decoration: const InputDecoration(labelText: 'Categoría'),
+              ),
+              TextField(
+                controller: descriptionController,
+                decoration: const InputDecoration(labelText: 'Descripción'),
+              ),
+              TextField(
+                controller: imageUrlController,
+                decoration:
+                    const InputDecoration(labelText: 'URL de la Imagen'),
+              ),
+              TextField(
+                controller: availableController,
+                decoration: const InputDecoration(labelText: 'Disponibles'),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final newBook = {
+                'title': titleController.text,
+                'author': authorController.text,
+                'category': categoryController.text,
+                'description': descriptionController.text,
+                'image': imageUrlController.text,
+                'available': int.tryParse(availableController.text) ?? 0,
+              };
+
+              setState(() {
+                books.add(newBook);
+              });
+
+              Navigator.of(context).pop(); // Cierra el diálogo
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Libro agregado exitosamente'),
+                  backgroundColor: Colors.green,
+                  duration: const Duration(seconds: 3),
+                ),
+              );
+            },
+            child: const Text('Agregar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredBooks = books.where((book) {
@@ -40,13 +128,8 @@ class _BooksScreenState extends State<BooksScreen> {
       appBar: AppBar(
         title: const Row(
           children: [
-            Icon(
-              Icons.home,
-              size: 28,
-            ),
-            SizedBox(
-              width: 5,
-            ),
+            Icon(Icons.home, size: 28),
+            SizedBox(width: 5),
             Text(
               'Menu Principal',
               style: TextStyle(fontSize: 25),
@@ -70,16 +153,7 @@ class _BooksScreenState extends State<BooksScreen> {
       drawer: CustomDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddBookScreen()),
-          ).then((newBook) {
-            if (newBook != null) {
-              setState(() {
-                books.add(newBook);
-              });
-            }
-          });
+          _showAddBookDialog(context); // Llama al método del modal
         },
         child: Icon(Icons.add),
         backgroundColor: AppColors.secondary,
