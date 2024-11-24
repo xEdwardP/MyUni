@@ -1,42 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:myuni/services/authservice.dart';
+import 'package:provider/provider.dart';
 
 
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+//Class of Sing Up
+class SignUpScreen extends StatefulWidget {
+const SignUpScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SignUpScreen(),
-    );
-  }
+State<SignUpScreen> createState()=> _SignScreenState();
 }
 
-class SignUpScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+class _SignScreenState extends State<SignUpScreen> {
+  final TextEditingController name = TextEditingController();
+  final TextEditingController email= TextEditingController();
+  final TextEditingController password = TextEditingController();
+
+    Widget build(BuildContext context) {
+      final authservice = Provider.of<Authservice>(context);
     return SafeArea(
+
       child: Scaffold(
         backgroundColor: Color.fromRGBO(255, 240, 204, 0.982),
         body: Center(
+
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 children: [
-                  Text(
-                    "BIBLIOTECA UNICAH",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  //logo UNICAH
+                 Image.asset(
+                  'assets/ logo.png',
+                  height: 200,
                   ),
                   SizedBox(height: 10),
+                  //Title
                   Text(
                     "Crea una Cuenta",
                     textAlign: TextAlign.center,
@@ -48,13 +47,18 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ],
               ),
+
+              //Method of TextBox
               SizedBox(height: 25.0),
-              _textFleldName(),
+              _textFleldName(context),
               SizedBox(height: 15.0),
-              _textFleldEmail(),
+              _textFleldEmail(context),
               SizedBox(height: 15.0),
-              _textFleldPassword(),
+              _textFleldPassword(context),
               SizedBox(height: 15.0),
+
+
+              //Mover al inicio de sesion
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -65,6 +69,8 @@ class SignUpScreen extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
+
+                  //Button that move to Login
                   TextButton(
                     onPressed: () {},
                     child: Text(
@@ -74,40 +80,71 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: 10),
+              
+              //Sign Correct
+              if(authservice.band)
+               Text(
+                'Su cuenta se ah Registrado con exito!',
+                style: TextStyle(
+                  color: Colors.cyan[100],
+                  fontWeight: FontWeight.bold,
+                ),
+                
+              )
+              else if (authservice.email.isNotEmpty || authservice.password.isNotEmpty)
+              Text(
+                'Error! Su Correo o Contraseña no cumplen con los requisitos necesarios ',
+                style: TextStyle(
+                  color: Colors.red[400],
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _textFleldName() {
+
+  //Widgets of TextBox
+
+  Widget _textFleldName(BuildContext context) {
+        final authservice = Provider.of<Authservice>(context, listen: false);
     return _TextFieldGeneral(
       labelText: 'Nombre',
       hintText: 'Jose Alvarado',
-      onChanged: (value) {},
+      onChanged: (value) => authservice.setuser(value),
+      icon: Icons.person_2_outlined,
     );
   }
 
-  Widget _textFleldEmail() {
+  Widget _textFleldEmail(BuildContext context) {
+    final authservice = Provider.of<Authservice>(context, listen: false);
     return _TextFieldGeneral(
       labelText: 'Email',
       hintText: 'Example@gmail.com',
       keyboardType: TextInputType.emailAddress,
-      onChanged: (value) {},
+      onChanged: (value) => authservice.setEmail(value),
       icon: Icons.email_outlined,
     );
   }
 
-  Widget _textFleldPassword() {
+  Widget _textFleldPassword(BuildContext context) {
+    final authservice = Provider.of<Authservice>(context, listen: false);
     return _TextFieldGeneral(
       labelText: 'Contraseña',
-      onChanged: (value) {},
+      onChanged: (value) =>authservice.setPassword(value),
       icon: Icons.lock_outline_rounded,
       obscuretext: true,
     );
   }
-}
+
+
+
+
+//Class of Conditional TextBox
 
 class _TextFieldGeneral extends StatelessWidget {
   final String labelText;
@@ -117,7 +154,8 @@ class _TextFieldGeneral extends StatelessWidget {
   final IconData? icon;
   final bool obscuretext;
 
-  const _TextFieldGeneral({
+
+  const  _TextFieldGeneral({
     required this.labelText,
     this.hintText = '',
     required this.onChanged,
@@ -126,21 +164,32 @@ class _TextFieldGeneral extends StatelessWidget {
     this.obscuretext = false,
   });
 
+
+//Widget of Conditional
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(padding: const EdgeInsets.symmetric(horizontal: 20),
+    child:
+     Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(10),
+      ) ,
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       child: TextField(
         keyboardType: keyboardType,
         obscureText: obscuretext,
         decoration: InputDecoration(
-          prefixIcon: icon != null ? Icon(icon) : null,
+          prefixIcon:  Icon(icon),
           labelText: labelText,
           hintText: hintText,
           border: OutlineInputBorder(),
         ),
         onChanged: onChanged,
       ),
+    ), 
     );
+   
   }
 }
