@@ -14,25 +14,94 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _id = TextEditingController();
 
+  List <Map<String,String>> _registro =[];
+
   String? _entrada;
   String? _salida;
 
 //Mark to Time of Entry & Leave
   void _marcaEntrada() {
-    setState(() {
+  
+  if(_name.text.isNotEmpty && _id.text.isNotEmpty){
+ setState(() {
       _entrada = TimeOfDay.now().format(context);
+      _registro.add({
+        'nombre': _name.text,
+        'identidad': _id.text,
     });
-    ScaffoldMessenger.of(context).showSnackBar(
+
+
+    });
+     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Hora de entrada: $_entrada')),
     );
+
+  }else{
+    ScaffoldMessenger.of(context).showSnackBar(
+     SnackBar(content: Text('Error! Necesita llenar todos los campos')), 
+    );
+   
+   
+    _name.clear();
+    _id.clear();
+  }
   }
 
   void _marcaSalida() {
-    setState(() {
+     if(_name.text.isNotEmpty && _id.text.isNotEmpty){
+ setState(() {
       _salida = TimeOfDay.now().format(context);
+      _registro.add({
+        'nombre': _name.text,
+        'identidad': _id.text,
+    });
+
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Hora de salida: $_salida')),
+    );
+  }else{
+    ScaffoldMessenger.of(context).showSnackBar(
+     SnackBar(content: Text('Error! Necesita llenar todos los campos')), 
+    );
+  }
+       _name.clear();
+       _id.clear();
+  }
+  void _historial(){
+    showDialog(
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          title: Text('Historial de entrads y salidas'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _registro.map((entrada) {
+                  return ListTile(
+                      title: Text('${entrada['nombre']} - ${entrada['identidad']}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Entrada: ${entrada['entrada'] ?? 'No registrado'}'),
+                      Text('Salida: ${entrada['salida'] ?? 'No registrado'}'),
+                    ],
+                  ),
+                  );
+              }).toList(),
+
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text('Cerrar'),
+            ),
+          ],
+        );
+      }
     );
   }
 
@@ -54,6 +123,7 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
               'Visitas',
               style: TextStyle(fontSize: 25),
             ),
+            
           ],
         ),
         centerTitle: true,
@@ -61,18 +131,29 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
         backgroundColor: AppColors.secondary,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications),
+            onPressed: _historial,
+            icon: const Icon(Icons.notifications_active),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.settings),
-          ),
+          
         ],
       ),
       drawer: CustomDrawer(),
-      backgroundColor: const Color.fromARGB(255, 220, 255, 208),
-      body: Center(
+      
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.green[50]!,
+              Colors.green[200]!,
+              Colors.green[400]!,
+
+            ]
+            ),
+        ),
+
+        child:   Center(
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -84,7 +165,7 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
                     'REGISTRO DE ASISTENCIA',
                     style: TextStyle(
                       fontSize: 30,
-                      color: Colors.indigo,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -95,6 +176,8 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
                       hintText: 'Jose Alvarado',
                       border: OutlineInputBorder(),
                       icon: Icon(Icons.person_2_outlined),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
                   ),
                   SizedBox(height: 15),
@@ -104,7 +187,11 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
                         labelText: 'Cuenta',
                         hintText: '0000200500000',
                         border: OutlineInputBorder(),
-                        icon: Icon(Icons.account_circle_outlined)),
+                        icon: Icon(Icons.account_circle_outlined),
+                        filled: true,
+                      fillColor: Colors.white,
+                        ),
+                        
 
                     //Button for Mark
                     keyboardType: TextInputType.number,
@@ -116,7 +203,9 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
                   ),
                   SizedBox(height: 15),
                   ElevatedButton(
-                      onPressed: _marcaSalida, child: Text('Marcar Salida')),
+                      onPressed: _marcaSalida, 
+                      child: Text('Marcar Salida')
+                      ),
                   SizedBox(height: 10),
                   if (_entrada != null)
                     Text(
@@ -134,6 +223,9 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
           ),
         ),
       ),
+      ),
+      
+     
     );
   }
 }
