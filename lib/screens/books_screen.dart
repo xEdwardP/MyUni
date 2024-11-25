@@ -127,10 +127,10 @@ class _BooksScreenState extends State<BooksScreen> {
       appBar: AppBar(
         title: const Row(
           children: [
-            Icon(Icons.home, size: 28),
+            Icon(Icons.book, size: 28),
             SizedBox(width: 5),
             Text(
-              'Menu Principal',
+              'Libros',
               style: TextStyle(fontSize: 25),
             ),
           ],

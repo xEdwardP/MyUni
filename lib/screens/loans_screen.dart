@@ -15,8 +15,34 @@ class _LoansScreenState extends State<LoansScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gestión de Préstamos'),
-        backgroundColor: AppColors.primary,
+        title: const Row(
+          children: [
+            Icon(
+              Icons.bookmark,
+              size: 28,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Prestamos',
+              style: TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
+        centerTitle: true,
+        elevation: 4.0,
+        backgroundColor: AppColors.secondary,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
       drawer: CustomDrawer(),
       body: Column(
@@ -84,7 +110,8 @@ class _LoansScreenState extends State<LoansScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: ListTile(
-                          leading: Icon(Icons.book_outlined, color: AppColors.primary),
+                          leading: Icon(Icons.book_outlined,
+                              color: AppColors.primary),
                           title: Text(
                             loan['bookTitle']!,
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -179,7 +206,8 @@ class _LoansScreenState extends State<LoansScreen> {
 
               if (borrower.isEmpty || loanDuration.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Por favor, completa todos los campos')),
+                  SnackBar(
+                      content: Text('Por favor, completa todos los campos')),
                 );
                 return;
               }
