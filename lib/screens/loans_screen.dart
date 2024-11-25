@@ -8,8 +8,9 @@ class LoansScreen extends StatefulWidget {
 }
 
 class _LoansScreenState extends State<LoansScreen> {
-  // Lista de libros prestados
   final List<Map<String, String>> loanedBooks = [];
+  int returnedBooksCount = 0; // Contador de libros devueltos.
+  final TextEditingController bookTitleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +47,8 @@ class _LoansScreenState extends State<LoansScreen> {
       ),
       drawer: CustomDrawer(),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Título "Préstamos UNICAH".
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
@@ -57,13 +58,33 @@ class _LoansScreenState extends State<LoansScreen> {
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
-          // Campo para registrar un nuevo préstamo.
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: [
+                _buildStatCard(
+                  'Préstamos Activos',
+                  loanedBooks.length.toString(),
+                  Icons.book,
+                  AppColors.primary,
+                ),
+                SizedBox(width: 16),
+                _buildStatCard(
+                  'Libros Devueltos',
+                  returnedBooksCount.toString(),
+                  Icons.done_all,
+                  Colors.green,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: TextField(
+              controller: bookTitleController,
               decoration: InputDecoration(
                 labelText: 'Título del libro',
                 border: OutlineInputBorder(
@@ -79,23 +100,19 @@ class _LoansScreenState extends State<LoansScreen> {
             ),
           ),
           SizedBox(height: 16),
-          // Subtítulo para la lista de préstamos.
+          Divider(),
           if (loanedBooks.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Préstamos Activos',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54,
-                  ),
+              child: Text(
+                'Préstamos Activos',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
                 ),
               ),
             ),
-          // Historial de préstamos activos.
           Expanded(
             child: loanedBooks.isNotEmpty
                 ? ListView.builder(
@@ -117,7 +134,7 @@ class _LoansScreenState extends State<LoansScreen> {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                              'Prestatario: ${loan['borrower']}\nDías: ${loan['days']}'),
+                              'Nombre: ${loan['studentName']}\nN° de Cuenta: ${loan['accountNumber']}\nDías: ${loan['days']}'),
                           trailing: IconButton(
                             icon: Icon(Icons.undo, color: Colors.red),
                             onPressed: () {
@@ -129,17 +146,10 @@ class _LoansScreenState extends State<LoansScreen> {
                     },
                   )
                 : Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.sentiment_dissatisfied,
-                            size: 48, color: Colors.grey),
-                        SizedBox(height: 8),
-                        Text(
-                          'No hay préstamos activos.',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
-                        ),
-                      ],
+                    child: Text(
+                      'No hay préstamos activos.',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                      textAlign: TextAlign.center,
                     ),
                   ),
           ),
@@ -148,11 +158,44 @@ class _LoansScreenState extends State<LoansScreen> {
     );
   }
 
-  // Diálogo para registrar un nuevo préstamo.
+  Widget _buildStatCard(
+      String title, String value, IconData icon, Color color) {
+    return Expanded(
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: color),
+              SizedBox(height: 8),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                title,
+                style: TextStyle(fontSize: 14, color: Colors.black54),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showLoanDialog(BuildContext context, String bookTitle) {
-    final TextEditingController borrowerController = TextEditingController();
-    final TextEditingController loanDurationController =
-        TextEditingController();
+    final accountNumberController = TextEditingController();
+    final studentNameController = TextEditingController();
+    final loanDurationController = TextEditingController();
 
     showDialog(
       context: context,
@@ -173,9 +216,19 @@ class _LoansScreenState extends State<LoansScreen> {
             ),
             SizedBox(height: 16),
             TextField(
-              controller: borrowerController,
+              controller: studentNameController,
               decoration: InputDecoration(
-                labelText: 'Nombre del prestatario',
+                labelText: 'Nombre',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: accountNumberController,
+              decoration: InputDecoration(
+                labelText: 'N° de Cuenta',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -196,15 +249,18 @@ class _LoansScreenState extends State<LoansScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(), // Cierra el diálogo.
+            onPressed: () => Navigator.of(context).pop(),
             child: Text('Cancelar'),
           ),
           ElevatedButton(
             onPressed: () {
-              final borrower = borrowerController.text;
+              final accountNumber = accountNumberController.text;
+              final studentName = studentNameController.text;
               final loanDuration = loanDurationController.text;
 
-              if (borrower.isEmpty || loanDuration.isEmpty) {
+              if (accountNumber.isEmpty ||
+                  studentName.isEmpty ||
+                  loanDuration.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                       content: Text('Por favor, completa todos los campos')),
@@ -212,26 +268,26 @@ class _LoansScreenState extends State<LoansScreen> {
                 return;
               }
 
-              // Agrega el préstamo al historial de préstamos activos.
               setState(() {
                 loanedBooks.add({
                   'bookTitle': bookTitle,
-                  'borrower': borrower,
+                  'studentName': studentName,
+                  'accountNumber': accountNumber,
                   'days': loanDuration,
                 });
+                bookTitleController.clear(); // Limpia el campo del título.
               });
 
-              // Muestra un mensaje de confirmación.
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                      'Préstamo confirmado: $bookTitle a $borrower por $loanDuration días.'),
+                      'Préstamo confirmado: $bookTitle al alumno ${studentName} con número de cuenta $accountNumber por $loanDuration días.'),
                   backgroundColor: Colors.green,
                   duration: Duration(seconds: 3),
                 ),
               );
 
-              Navigator.of(context).pop(); // Cierra el diálogo.
+              Navigator.of(context).pop();
             },
             child: Text('Registrar'),
           ),
@@ -240,15 +296,14 @@ class _LoansScreenState extends State<LoansScreen> {
     );
   }
 
-  // Función para devolver un libro.
   void _returnBook(int index) {
     setState(() {
       final returnedBook = loanedBooks.removeAt(index);
-      // Muestra un mensaje de confirmación de devolución.
+      returnedBooksCount++; // Incrementa el contador de libros devueltos.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              'Libro devuelto: ${returnedBook['bookTitle']} por ${returnedBook['borrower']}.'),
+              'Devolución confirmada: ${returnedBook['bookTitle']} por el alumno ${returnedBook['studentName']} con número de cuenta ${returnedBook['accountNumber']}.'),
           backgroundColor: Colors.blue,
           duration: Duration(seconds: 3),
         ),
