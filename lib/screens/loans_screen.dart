@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myuni/widgets/custom_drawer.dart';
 import 'package:myuni/utils/AppColors.dart';
+import 'package:myuni/data/books_data.dart'; // Importamos el archivo books_data
 
 class LoansScreen extends StatefulWidget {
   @override
@@ -11,26 +12,6 @@ class _LoansScreenState extends State<LoansScreen> {
   final List<Map<String, String>> loanedBooks = [];
   final TextEditingController bookTitleController = TextEditingController();
   int returnedBooksCount = 0;
-
-  final List<String> availableBooks = [
-    "El Quijote",
-    "Cien Años de Soledad",
-    "Donde los Árboles Cantan",
-    "1984",
-    "El Principito",
-    "Quinta estación",
-    "El despertar del leviatán",
-    "El problema de los tres cuerpos",
-    "Hacia las estrellas",
-    "Inteligencia Artificial",
-    "El mundo como yo lo veo",
-    "Inmune",
-    "Los dioses del norte",
-    "Narnia",
-    "Todas las hadas del reino",
-    "Los tres mosqueteros",
-    "La odisea",
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -104,35 +85,56 @@ class _LoansScreenState extends State<LoansScreen> {
               ),
             ),
             SizedBox(height: 16),
-            // Campo de búsqueda
+            // Campo de búsqueda con autocompletado
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextField(
-                    controller: bookTitleController,
-                    decoration: InputDecoration(
-                      labelText: 'Título del libro',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: Icon(Icons.book, color: AppColors.primary),
-                    ),
-                    onSubmitted: (bookTitle) {
-                      if (bookTitle.isEmpty) return;
-                      if (availableBooks.contains(bookTitle)) {
-                        _showLoanDialog(context, bookTitle);
-                        bookTitleController.clear();
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                'El libro "$bookTitle" no está disponible.'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                  Autocomplete<String>(
+                    optionsBuilder: (TextEditingValue textEditingValue) {
+                      if (textEditingValue.text.isEmpty) {
+                        return const Iterable<String>.empty();
                       }
+                      return books
+                          .where((book) => book['title']!
+                              .toLowerCase()
+                              .contains(textEditingValue.text.toLowerCase()))
+                          .map((book) => book['title']!);
+                    },
+                    onSelected: (String selection) {
+                      bookTitleController.text = selection;
+                      _showLoanDialog(context, selection);
+                    },
+                    fieldViewBuilder:
+                        (context, controller, focusNode, onFieldSubmitted) {
+                      return TextField(
+                        controller: controller,
+                        focusNode: focusNode,
+                        decoration: InputDecoration(
+                          labelText: 'Título del libro',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          prefixIcon:
+                              Icon(Icons.book, color: AppColors.primary),
+                        ),
+                        onSubmitted: (bookTitle) {
+                          if (bookTitle.isEmpty) return;
+                          if (books.any((book) => book['title'] == bookTitle)) {
+                            _showLoanDialog(context, bookTitle);
+                            controller.clear();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'El libro "$bookTitle" no está disponible.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
+                      );
                     },
                   ),
                   SizedBox(height: 8),
@@ -199,45 +201,6 @@ class _LoansScreenState extends State<LoansScreen> {
                   style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
               ),
-            Divider(),
-            // Lista de libros disponibles
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Libros Disponibles',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                ),
-              ),
-            ),
-            ListView.builder(
-              itemCount: availableBooks.length,
-              padding: const EdgeInsets.all(16.0),
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                final book = availableBooks[index];
-                return Card(
-                  elevation: 2,
-                  margin: EdgeInsets.only(bottom: 12.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ListTile(
-                    title: Text(book),
-                    trailing: IconButton(
-                      icon: Icon(Icons.add_circle, color: AppColors.primary),
-                      onPressed: () {
-                        bookTitleController.text = book;
-                        _showLoanDialog(context, book);
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
           ],
         ),
       ),
@@ -367,10 +330,7 @@ class _LoansScreenState extends State<LoansScreen> {
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                      'Préstamo confirmado: $bookTitle al alumno $studentName con número de cuenta $accountNumber por $loanDuration días.'),
-                  backgroundColor: Colors.green,
-                  duration: Duration(seconds: 3),
+                  content: Text('Préstamo registrado para "$bookTitle".'),
                 ),
               );
 
@@ -385,16 +345,11 @@ class _LoansScreenState extends State<LoansScreen> {
 
   void _returnBook(int index) {
     setState(() {
-      final returnedBook = loanedBooks.removeAt(index);
+      loanedBooks.removeAt(index);
       returnedBooksCount++;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              'Devolución confirmada: ${returnedBook['bookTitle']} por el alumno ${returnedBook['studentName']} con número de cuenta ${returnedBook['accountNumber']}.'),
-          backgroundColor: Colors.blue,
-          duration: Duration(seconds: 3),
-        ),
-      );
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Libro devuelto correctamente.')),
+    );
   }
 }
