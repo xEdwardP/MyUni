@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myuni/data/books_data.dart';
-import 'package:myuni/screens/addbook_screen.dart';
 import 'package:myuni/widgets/book_card.dart';
 import 'package:myuni/widgets/category_chip.dart';
 import 'package:myuni/utils/AppColors.dart';
@@ -60,7 +59,8 @@ class _BooksScreenState extends State<BooksScreen> {
               ),
               TextField(
                 controller: imageUrlController,
-                decoration: const InputDecoration(labelText: 'URL de la Imagen'),
+                decoration:
+                    const InputDecoration(labelText: 'URL de la Imagen'),
               ),
               TextField(
                 controller: availableController,
@@ -127,10 +127,10 @@ class _BooksScreenState extends State<BooksScreen> {
       appBar: AppBar(
         title: const Row(
           children: [
-            Icon(Icons.home, size: 28),
+            Icon(Icons.book, size: 28),
             SizedBox(width: 5),
             Text(
-              'Menu Principal',
+              'Libros',
               style: TextStyle(fontSize: 25),
             ),
           ],
@@ -150,15 +150,8 @@ class _BooksScreenState extends State<BooksScreen> {
         ],
       ),
       drawer: CustomDrawer(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddBookDialog(context); // Llama al método del modal
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: AppColors.secondary,
-      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -170,10 +163,26 @@ class _BooksScreenState extends State<BooksScreen> {
               },
               decoration: InputDecoration(
                 hintText: 'Buscar libros...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                _showAddBookDialog(context);
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Agregar Nuevo Libro'),
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: AppColors.secondary,
               ),
             ),
             const SizedBox(height: 20),
