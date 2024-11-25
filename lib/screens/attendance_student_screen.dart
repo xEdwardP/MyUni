@@ -41,10 +41,10 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
      SnackBar(content: Text('Error! Necesita llenar todos los campos')), 
     );
    
-   
+  }
+  
     _name.clear();
     _id.clear();
-  }
   }
 
   void _marcaSalida() {
@@ -73,7 +73,7 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
       context: context,
       builder: (context){
         return AlertDialog(
-          title: Text('Historial de entrads y salidas'),
+          title: Text('Historial de entradas y salidas'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +120,7 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
               width: 5,
             ),
             Text(
-              'Visitas',
+              'Registro de Asistencias',
               style: TextStyle(fontSize: 25),
             ),
             
@@ -145,10 +145,10 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.green[50]!,
-              Colors.green[200]!,
-              Colors.green[400]!,
-
+            const Color.fromARGB(255,244,253,234),
+            const Color.fromARGB(255,216,255,172),
+            const Color.fromARGB(255,187,255,110),
+            const Color.fromARGB(255,133,248,2),
             ]
             ),
         ),
@@ -161,32 +161,37 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
             children: [
               Column(
                 children: [
-                  Text(
-                    'REGISTRO DE ASISTENCIA',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                 CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.blueGrey[100],
+                    child: Icon(Icons.person,
+                    size: 50,
+                    color: Colors.blueAccent[150],
                     ),
-                  ),
+                    
+                 ),
                   TextField(
                     controller: _name,
                     decoration: InputDecoration(
                       labelText: 'Nombre',
                       hintText: 'Jose Alvarado',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       icon: Icon(Icons.person_2_outlined),
                       filled: true,
                       fillColor: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
                   TextField(
                     controller: _id,
                     decoration: InputDecoration(
                         labelText: 'Cuenta',
                         hintText: '0000200500000',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         icon: Icon(Icons.account_circle_outlined),
                         filled: true,
                       fillColor: Colors.white,
@@ -196,7 +201,7 @@ class _AttendanceStudentState extends State<AttendanceStudent> {
                     //Button for Mark
                     keyboardType: TextInputType.number,
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: _marcaEntrada,
                     child: Text('Marcar Entrada'),
