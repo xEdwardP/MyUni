@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myuni/data/books_data.dart';
-import 'package:myuni/screens/addbook_screen.dart';
 import 'package:myuni/widgets/book_card.dart';
 import 'package:myuni/widgets/category_chip.dart';
 import 'package:myuni/utils/AppColors.dart';
@@ -151,13 +150,6 @@ class _BooksScreenState extends State<BooksScreen> {
         ],
       ),
       drawer: CustomDrawer(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddBookDialog(context); // Llama al método del modal
-        },
-        child: Icon(Icons.add),
-        backgroundColor: AppColors.secondary,
-      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -175,6 +167,22 @@ class _BooksScreenState extends State<BooksScreen> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                _showAddBookDialog(context);
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Agregar Nuevo Libro'),
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: AppColors.secondary,
               ),
             ),
             const SizedBox(height: 20),
