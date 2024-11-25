@@ -18,6 +18,15 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int totalPrestamos = calcularTotalPrestamos();
+    // Obtener el tamaño de la pantalla
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    // Definir cantidad de columnas en GridView
+    int crossAxisCount = screenWidth < 600
+        ? 2
+        : screenWidth < 900
+            ? 3
+            : 4;
 
     return Scaffold(
       appBar: AppBar(
@@ -58,9 +67,8 @@ class HomeScreen extends StatelessWidget {
           children: [
             Image.asset(
               'assets/logo.png',
-              height: 200, // Ajusta el tamaño de la imagen
+              height: 200,
             ),
-            // Bienvenida
             Text(
               '¡Bienvenido a la Biblioteca Virtual UNICAH!',
               textAlign: TextAlign.center,
@@ -80,56 +88,65 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            // Cards compactas
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 6,
-                mainAxisSpacing: 39,
-                childAspectRatio: 1.5, // Relación ancho/alto de las tarjetas
+              child: GridView.builder(
                 physics: const BouncingScrollPhysics(),
-                children: [
-                  buildCompactCard(
-                    icon: Icons.book,
-                    value: '$totalPrestamos',
-                    title: 'Libros Prestados',
-                    color: Colors.teal,
-                  ),
-                  buildCompactCard(
-                    icon: Icons.people,
-                    value: '120',
-                    title: 'Usuarios Activos',
-                    color: Colors.orange,
-                  ),
-                  buildCompactCard(
-                    icon: Icons.menu_book,
-                    value: '2500',
-                    title: 'Libros Disponibles',
-                    color: Colors.blue,
-                  ),
-                  buildCompactCard(
-                    icon: Icons.timer,
-                    value: '10',
-                    title: 'Préstamos Vencidos',
-                    color: Colors.red,
-                  ),
-                ],
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount, // Número de columnas dinámico
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 1.3,
+                ),
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  List<Map<String, dynamic>> items = [
+                    {
+                      'icon': Icons.book,
+                      'value': '$totalPrestamos',
+                      'title': 'Libros Prestados',
+                      'color': Colors.teal,
+                    },
+                    {
+                      'icon': Icons.people,
+                      'value': '120',
+                      'title': 'Usuarios Activos',
+                      'color': Colors.orange,
+                    },
+                    {
+                      'icon': Icons.menu_book,
+                      'value': '2500',
+                      'title': 'Libros Disponibles',
+                      'color': Colors.blue,
+                    },
+                    {
+                      'icon': Icons.timer,
+                      'value': '10',
+                      'title': 'Préstamos Vencidos',
+                      'color': Colors.red,
+                    },
+                  ];
+                  return buildCompactCard(
+                    icon: items[index]['icon'],
+                    value: items[index]['value'],
+                    title: items[index]['title'],
+                    color: items[index]['color'],
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
-      // Barra amarilla en la parte inferior
       bottomNavigationBar: Container(
         height: 50,
-        color: AppColors.secondary, // Color barra inferior
+        color: AppColors.secondary,
         child: Center(
           child: Text(
             '¡Gracias por usar la Biblioteca Virtual UNICAH!',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black, // Contraste de texto
+              color: Colors.black,
             ),
           ),
         ),
@@ -146,10 +163,10 @@ class HomeScreen extends StatelessWidget {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -165,19 +182,19 @@ class HomeScreen extends StatelessWidget {
                 Text(
                   value,
                   style: TextStyle(
-                    fontSize: 27,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: color,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Text(
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey[700],
               ),

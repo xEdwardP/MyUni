@@ -8,6 +8,7 @@ class ReturnsScreen extends StatefulWidget {
 }
 
 class _ReturnsScreenState extends State<ReturnsScreen> {
+  final _formKey = GlobalKey<FormState>(); // Llave para manejar el formulario
   final _bookIdController = TextEditingController();
   final _bookNameController = TextEditingController();
   final _studentIdController = TextEditingController();
@@ -52,57 +53,30 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   }
 
   void _addReturn() {
-    final returnDate = DateTime.now().toString().split(' ')[0];
-    final fine = _calculateFine(_dueDateController.text, returnDate);
+    if (_formKey.currentState!.validate()) {
+      final returnDate = DateTime.now().toString().split(' ')[0];
+      final fine = _calculateFine(_dueDateController.text, returnDate);
 
-    setState(() {
-      _returnsList.add({
-        'bookId': _bookIdController.text,
-        'bookName': _bookNameController.text,
-        'studentId': _studentIdController.text,
-        'studentName': _studentNameController.text,
-        'returnDate': returnDate,
-        'dueDate': _dueDateController.text,
-        'condition': _bookCondition,
-        'fine': fine,
+      setState(() {
+        _returnsList.add({
+          'bookId': _bookIdController.text,
+          'bookName': _bookNameController.text,
+          'studentId': _studentIdController.text,
+          'studentName': _studentNameController.text,
+          'returnDate': returnDate,
+          'dueDate': _dueDateController.text,
+          'condition': _bookCondition,
+          'fine': fine,
+        });
+
+        _bookIdController.clear();
+        _bookNameController.clear();
+        _studentIdController.clear();
+        _studentNameController.clear();
+        _dueDateController.clear();
+        _bookCondition = "Buenas Condiciones";
       });
-
-      _bookIdController.clear();
-      _bookNameController.clear();
-      _studentIdController.clear();
-      _studentNameController.clear();
-      _dueDateController.clear();
-      _bookCondition = "Buenas Condiciones";
-    });
-  }
-
-  void _showReturnDetails(Map<String, dynamic> returnItem) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Detalles de la Devolución'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Libro: ${returnItem['bookName']} (ID: ${returnItem['bookId']})'),
-              Text('Estudiante: ${returnItem['studentName']} (ID: ${returnItem['studentId']})'),
-              Text('Fecha de Devolución: ${returnItem['returnDate']}'),
-              Text('Fecha Límite: ${returnItem['dueDate']}'),
-              Text('Estado del Libro: ${returnItem['condition']}'),
-              Text('Multa: L ${returnItem['fine'].toStringAsFixed(2)}'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cerrar'),
-            ),
-          ],
-        );
-      },
-    );
+    }
   }
 
   @override
@@ -131,149 +105,186 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Registrar Devolución',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _bookIdController,
-                        decoration: InputDecoration(
-                          labelText: 'ID del Libro',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _bookNameController,
-                        decoration: InputDecoration(
-                          labelText: 'Nombre del Libro',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _studentIdController,
-                        decoration: InputDecoration(
-                          labelText: 'Número de Cuenta del Estudiante',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _studentNameController,
-                        decoration: InputDecoration(
-                          labelText: 'Nombre del Estudiante',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: _dueDateController,
-                        decoration: InputDecoration(
-                          labelText: 'Fecha Límite (Y-M-D)',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        value: _bookCondition,
-                        onChanged: (value) {
-                          setState(() {
-                            _bookCondition = value!;
-                          });
-                        },
-                        items: ['Buenas Condiciones', 'Condiciones Reparables', 'Condiciones Irreparables']
-                            .map((condition) => DropdownMenuItem(
-                                  value: condition,
-                                  child: Text(condition),
-                                ))
-                            .toList(),
-                        decoration: InputDecoration(
-                          labelText: 'Estado del Libro',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        onPressed: _addReturn,
-                        icon: const Icon(Icons.check_circle_outline),
-                        label: const Text('Registrar'),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 24),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          backgroundColor: AppColors.secondary,
-                        ),
-                      ),
-                    ],
+          child: Form(
+            key: _formKey, // Vincula el formulario con su llave
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Registrar Devolución',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Divider(height: 20, thickness: 2),
-              const Text(
-                'Historial de Devoluciones',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+                const SizedBox(height: 10),
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _bookIdController,
+                          decoration: InputDecoration(
+                            labelText: 'ID del Libro',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, ingresa el ID del Libro';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _bookNameController,
+                          decoration: InputDecoration(
+                            labelText: 'Nombre del Libro',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, ingresa el Nombre del Libro';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _studentIdController,
+                          decoration: InputDecoration(
+                            labelText: 'Número de Cuenta del Estudiante',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, ingresa el Número de Cuenta';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _studentNameController,
+                          decoration: InputDecoration(
+                            labelText: 'Nombre del Estudiante',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, ingresa el Nombre del Estudiante';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _dueDateController,
+                          decoration: InputDecoration(
+                            labelText: 'Fecha Límite (Y-M-D)',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, ingresa la Fecha Límite';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        DropdownButtonFormField<String>(
+                          value: _bookCondition,
+                          onChanged: (value) {
+                            setState(() {
+                              _bookCondition = value!;
+                            });
+                          },
+                          items: [
+                            'Buenas Condiciones',
+                            'Condiciones Reparables',
+                            'Condiciones Irreparables'
+                          ]
+                              .map((condition) => DropdownMenuItem(
+                                    value: condition,
+                                    child: Text(condition),
+                                  ))
+                              .toList(),
+                          decoration: InputDecoration(
+                            labelText: 'Estado del Libro',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton.icon(
+                          onPressed: _addReturn,
+                          icon: const Icon(Icons.check_circle_outline),
+                          label: const Text('Registrar'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 24),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            backgroundColor: AppColors.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _returnsList.length,
-                itemBuilder: (context, index) {
-                  final returnItem = _returnsList[index];
-                  return Card(
-                    elevation: 3,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: ListTile(
-                      leading: const Icon(Icons.book, color: AppColors.primary),
-                      title: Text('Libro: ${returnItem['bookName']}'),
-                      subtitle: Text(
-                          'Estudiante: ${returnItem['studentName']}\nMulta: L ${returnItem['fine'].toStringAsFixed(2)}'),
-                      onTap: () => _showReturnDetails(returnItem),
-                    ),
-                  );
-                },
-              ),
-            ],
+                const SizedBox(height: 20),
+                const Divider(height: 20, thickness: 2),
+                const Text(
+                  'Historial de Devoluciones',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _returnsList.length,
+                  itemBuilder: (context, index) {
+                    final returnItem = _returnsList[index];
+                    return Card(
+                      elevation: 3,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListTile(
+                        leading:
+                            const Icon(Icons.book, color: AppColors.primary),
+                        title: Text('Libro: ${returnItem['bookName']}'),
+                        subtitle: Text(
+                            'Estudiante: ${returnItem['studentName']}\nMulta: L ${returnItem['fine'].toStringAsFixed(2)}'),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
