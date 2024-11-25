@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myuni/widgets/custom_drawer.dart';
 import 'package:myuni/utils/AppColors.dart';
+import 'package:myuni/data/books_data.dart'; // Importamos el archivo books_data
 
 class LoansScreen extends StatefulWidget {
   @override
@@ -9,8 +10,8 @@ class LoansScreen extends StatefulWidget {
 
 class _LoansScreenState extends State<LoansScreen> {
   final List<Map<String, String>> loanedBooks = [];
-  int returnedBooksCount = 0; // Contador de libros devueltos.
   final TextEditingController bookTitleController = TextEditingController();
+  int returnedBooksCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,114 +47,162 @@ class _LoansScreenState extends State<LoansScreen> {
         ],
       ),
       drawer: CustomDrawer(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Préstamos UNICAH',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Encabezado
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Préstamos UNICAH',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                _buildStatCard(
-                  'Préstamos Activos',
-                  loanedBooks.length.toString(),
-                  Icons.book,
-                  AppColors.primary,
-                ),
-                SizedBox(width: 16),
-                _buildStatCard(
-                  'Libros Devueltos',
-                  returnedBooksCount.toString(),
-                  Icons.done_all,
-                  Colors.green,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: TextField(
-              controller: bookTitleController,
-              decoration: InputDecoration(
-                labelText: 'Título del libro',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                prefixIcon: Icon(Icons.book, color: AppColors.primary),
-              ),
-              onSubmitted: (bookTitle) {
-                if (bookTitle.isNotEmpty) {
-                  _showLoanDialog(context, bookTitle);
-                }
-              },
-            ),
-          ),
-          SizedBox(height: 16),
-          Divider(),
-          if (loanedBooks.isNotEmpty)
+            // Estadísticas
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Préstamos Activos',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                ),
+              child: Row(
+                children: [
+                  _buildStatCard(
+                    'Préstamos Activos',
+                    loanedBooks.length.toString(),
+                    Icons.book,
+                    AppColors.primary,
+                  ),
+                  SizedBox(width: 16),
+                  _buildStatCard(
+                    'Libros Devueltos',
+                    returnedBooksCount.toString(),
+                    Icons.done_all,
+                    Colors.green,
+                  ),
+                ],
               ),
             ),
-          Expanded(
-            child: loanedBooks.isNotEmpty
-                ? ListView.builder(
-                    itemCount: loanedBooks.length,
-                    padding: const EdgeInsets.all(16.0),
-                    itemBuilder: (context, index) {
-                      final loan = loanedBooks[index];
-                      return Card(
-                        elevation: 4,
-                        margin: EdgeInsets.only(bottom: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          leading: Icon(Icons.book_outlined,
-                              color: AppColors.primary),
-                          title: Text(
-                            loan['bookTitle']!,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+            SizedBox(height: 16),
+            // Campo de búsqueda con autocompletado
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Autocomplete<String>(
+                    optionsBuilder: (TextEditingValue textEditingValue) {
+                      if (textEditingValue.text.isEmpty) {
+                        return const Iterable<String>.empty();
+                      }
+                      return books
+                          .where((book) => book['title']!
+                              .toLowerCase()
+                              .contains(textEditingValue.text.toLowerCase()))
+                          .map((book) => book['title']!);
+                    },
+                    onSelected: (String selection) {
+                      bookTitleController.text = selection;
+                      _showLoanDialog(context, selection);
+                    },
+                    fieldViewBuilder:
+                        (context, controller, focusNode, onFieldSubmitted) {
+                      return TextField(
+                        controller: controller,
+                        focusNode: focusNode,
+                        decoration: InputDecoration(
+                          labelText: 'Título del libro',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          subtitle: Text(
-                              'Nombre: ${loan['studentName']}\nN° de Cuenta: ${loan['accountNumber']}\nDías: ${loan['days']}'),
-                          trailing: IconButton(
-                            icon: Icon(Icons.undo, color: Colors.red),
-                            onPressed: () {
-                              _returnBook(index);
-                            },
-                          ),
+                          prefixIcon:
+                              Icon(Icons.book, color: AppColors.primary),
                         ),
+                        onSubmitted: (bookTitle) {
+                          if (bookTitle.isEmpty) return;
+                          if (books.any((book) => book['title'] == bookTitle)) {
+                            _showLoanDialog(context, bookTitle);
+                            controller.clear();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'El libro "$bookTitle" no está disponible.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
                       );
                     },
-                  )
-                : Center(
-                    child: Text(
-                      'No hay préstamos activos.',
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
                   ),
-          ),
-        ],
+                  SizedBox(height: 8),
+                  Text(
+                    'Presiona Enter después de ingresar el título para hacer un préstamo.',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16),
+            Divider(),
+            // Lista de préstamos activos
+            if (loanedBooks.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Préstamos Activos',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+            if (loanedBooks.isNotEmpty)
+              ListView.builder(
+                itemCount: loanedBooks.length,
+                padding: const EdgeInsets.all(16.0),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final loan = loanedBooks[index];
+                  return Card(
+                    elevation: 4,
+                    margin: EdgeInsets.only(bottom: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      leading:
+                          Icon(Icons.book_outlined, color: AppColors.primary),
+                      title: Text(
+                        loan['bookTitle']!,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                          'Nombre: ${loan['studentName']}\nN° de Cuenta: ${loan['accountNumber']}\nDías: ${loan['days']}'),
+                      trailing: IconButton(
+                        icon: Icon(Icons.undo, color: Colors.red),
+                        onPressed: () {
+                          _returnBook(index);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+            if (loanedBooks.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'No hay préstamos activos.',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -254,16 +303,17 @@ class _LoansScreenState extends State<LoansScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              final accountNumber = accountNumberController.text;
               final studentName = studentNameController.text;
+              final accountNumber = accountNumberController.text;
               final loanDuration = loanDurationController.text;
 
-              if (accountNumber.isEmpty ||
-                  studentName.isEmpty ||
+              if (studentName.isEmpty ||
+                  accountNumber.isEmpty ||
                   loanDuration.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                      content: Text('Por favor, completa todos los campos')),
+                    content: Text('Por favor, completa todos los campos'),
+                  ),
                 );
                 return;
               }
@@ -275,15 +325,12 @@ class _LoansScreenState extends State<LoansScreen> {
                   'accountNumber': accountNumber,
                   'days': loanDuration,
                 });
-                bookTitleController.clear(); // Limpia el campo del título.
+                bookTitleController.clear();
               });
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                      'Préstamo confirmado: $bookTitle al alumno ${studentName} con número de cuenta $accountNumber por $loanDuration días.'),
-                  backgroundColor: Colors.green,
-                  duration: Duration(seconds: 3),
+                  content: Text('Préstamo registrado para "$bookTitle".'),
                 ),
               );
 
@@ -298,16 +345,11 @@ class _LoansScreenState extends State<LoansScreen> {
 
   void _returnBook(int index) {
     setState(() {
-      final returnedBook = loanedBooks.removeAt(index);
-      returnedBooksCount++; // Incrementa el contador de libros devueltos.
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              'Devolución confirmada: ${returnedBook['bookTitle']} por el alumno ${returnedBook['studentName']} con número de cuenta ${returnedBook['accountNumber']}.'),
-          backgroundColor: Colors.blue,
-          duration: Duration(seconds: 3),
-        ),
-      );
+      loanedBooks.removeAt(index);
+      returnedBooksCount++;
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Libro devuelto correctamente.')),
+    );
   }
 }
