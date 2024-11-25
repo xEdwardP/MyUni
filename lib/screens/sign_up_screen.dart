@@ -74,7 +74,7 @@ class _SignScreenState extends State<SignUpScreen> {
 
                   //Button that move to Login
                   TextButton(
-                    onPressed: () {},
+                    onPressed: (){} ,
                     child: Text(
                       'Inicia Sesión',
                       style: TextStyle(color: Colors.blue),

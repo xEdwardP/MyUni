@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myuni/models/user_model.dart';
 
 //Class of Authentication
 class Authservice with ChangeNotifier{
