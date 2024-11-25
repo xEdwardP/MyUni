@@ -57,7 +57,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/logo.png', 
+              'assets/logo.png',
               height: 200, // Ajusta el tamaño de la imagen
             ),
             // Bienvenida
@@ -72,7 +72,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Mira las estadísticas de los Libros de biblioteca',
+              'Observa una Breve estadística de los Libros de biblioteca',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -84,8 +84,8 @@ class HomeScreen extends StatelessWidget {
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
-                crossAxisSpacing: 1,
-                mainAxisSpacing: 1,
+                crossAxisSpacing: 6,
+                mainAxisSpacing: 39,
                 childAspectRatio: 1.5, // Relación ancho/alto de las tarjetas
                 physics: const BouncingScrollPhysics(),
                 children: [
@@ -119,6 +119,21 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+      // Barra amarilla en la parte inferior
+      bottomNavigationBar: Container(
+        height: 50,
+        color: AppColors.secondary, // Color barra inferior
+        child: Center(
+          child: Text(
+            '¡Gracias por usar la Biblioteca Virtual UNICAH!',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, // Contraste de texto
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -143,14 +158,14 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  size: 70, // Ícono más pequeño
+                  size: 25,
                   color: color,
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 6),
                 Text(
                   value,
                   style: TextStyle(
-                    fontSize: 30, // Tamaño de texto reducido
+                    fontSize: 27,
                     fontWeight: FontWeight.bold,
                     color: color,
                   ),
@@ -162,7 +177,7 @@ class HomeScreen extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 20, // Texto más pequeño
+                fontSize: 15,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey[700],
               ),

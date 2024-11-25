@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myuni/screens/attendance_student_screen.dart';
+import 'package:myuni/screens/sign_up_screen.dart';
 import 'package:provider/provider.dart';
 import 'models/login_model.dart';
 import 'screens/login_screen.dart';
@@ -21,13 +23,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      initialRoute: '/home',
       routes: {
         '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
         '/books': (context) => BooksScreen(),
         '/loans': (context) => LoansScreen(),
         '/returns': (context) => ReturnsScreen(),
+        '/attendances': (context) => AttendanceStudent(),
+        '/register': (context) => SignUpScreen(),
       },
     );
   }
