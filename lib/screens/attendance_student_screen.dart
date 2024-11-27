@@ -1,236 +1,246 @@
 import 'package:flutter/material.dart';
 import 'package:myuni/utils/AppColors.dart';
-import 'package:myuni/widgets/custom_drawer.dart';
 
-class AttendanceStudent extends StatefulWidget {
-  const AttendanceStudent({super.key});
-
+class Attendance extends StatefulWidget {
   @override
-  State<AttendanceStudent> createState() => _AttendanceStudentState();
+  _AttendanceState createState() => _AttendanceState();
 }
 
-//Assittence of Students
-class _AttendanceStudentState extends State<AttendanceStudent> {
-  final TextEditingController _name = TextEditingController();
-  final TextEditingController _id = TextEditingController();
+class _AttendanceState extends State<Attendance> {
+  //variable que administra el nombre y la identidad
+  final _name = TextEditingController();
+  final _id = TextEditingController();
 
-  List <Map<String,String>> _registro =[];
+  //bandera de condicion
+  bool _registro = false;
 
-  String? _entrada;
-  String? _salida;
+  //listas donde se almacena la informacion ingresada
+  final List<String> _hisentradas = [];
+  final List<String> _hissalidas = [];
 
-//Mark to Time of Entry & Leave
-  void _marcaEntrada() {
-  
-  if(_name.text.isNotEmpty && _id.text.isNotEmpty){
- setState(() {
-      _entrada = TimeOfDay.now().format(context);
-      _registro.add({
-        'nombre': _name.text,
-        'identidad': _id.text,
-    });
+  //metodo de entrada
+  void _entradas() {
+    final nombre = _name.text;
+    final identidad = _id.text;
 
-
-    });
-     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Hora de entrada: $_entrada')),
-    );
-
-  }else{
-    ScaffoldMessenger.of(context).showSnackBar(
-     SnackBar(content: Text('Error! Necesita llenar todos los campos')), 
-    );
-   
-  }
-  
+    if (nombre.isEmpty || identidad.isEmpty) {
+      _messange('Por favor, complete todos los campos.');
+    } else {
+      setState(() {
+        _registro = true;
+        _hisentradas.add('Entrada: $nombre - $identidad (${DateTime.now()})');
+      });
+      _messange('Entrada registrada correctamente.');
+    }
     _name.clear();
     _id.clear();
   }
 
-  void _marcaSalida() {
-     if(_name.text.isNotEmpty && _id.text.isNotEmpty){
- setState(() {
-      _salida = TimeOfDay.now().format(context);
-      _registro.add({
-        'nombre': _name.text,
-        'identidad': _id.text,
-    });
+  //metodo de salida
+  void _salidas() {
+    if (_registro == false) {
+      _messange('Error: No ha registrado su entrada.');
+    } else {
+      setState(() {
+        _registro = false;
+        _hissalidas.add('Salida: (${DateTime.now()})');
+      });
+      _messange('Salida registrada correctamente.');
+    }
+    _name.clear();
+    _id.clear();
+  }
 
-    });
+  void _messange(String mensaje) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Hora de salida: $_salida')),
-    );
-  }else{
-    ScaffoldMessenger.of(context).showSnackBar(
-     SnackBar(content: Text('Error! Necesita llenar todos los campos')), 
+      SnackBar(content: Text(mensaje)),
     );
   }
-       _name.clear();
-       _id.clear();
-  }
-  void _historial(){
-    showDialog(
-      context: context,
-      builder: (context){
-        return AlertDialog(
-          title: Text('Historial de entradas y salidas'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: _registro.map((entrada) {
-                  return ListTile(
-                      title: Text('${entrada['nombre']} - ${entrada['identidad']}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Entrada: ${entrada['entrada'] ?? 'No registrado'}'),
-                      Text('Salida: ${entrada['salida'] ?? 'No registrado'}'),
-                    ],
-                  ),
-                  );
-              }).toList(),
 
+  //metodo que muestra la informacion de entrada
+  void _infoentrada() {
+    if (_hisentradas.isEmpty) {
+      _messange('No hay entradas registradas.');
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Historial de Entradas'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: _hisentradas.map((e) => Text(e)).toList(),
+              ),
             ),
-          ),
-          actions: [
-            TextButton(
-                onPressed: (){
-                  Navigator.pop(context);
-                },
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
                 child: Text('Cerrar'),
-            ),
-          ],
-        );
-      }
-    );
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
-//Screen
+  //metodo que muestra la informacion de salida
+  void _infosalida() {
+    if (_hissalidas.isEmpty) {
+      _messange('No hay salidas registradas.');
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Historial de Salidas'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: _hissalidas.map((e) => Text(e)).toList(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cerrar'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+//Conotrol del screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Row(
           children: [
-            Icon(
-              Icons.home,
-              size: 28,
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Text(
-              'Registro de Asistencias',
-              style: TextStyle(fontSize: 25),
-            ),
-            
+            Icon(Icons.list, size: 28),
+            SizedBox(width: 5),
+            Text('Asistencias', style: TextStyle(fontSize: 25)),
           ],
         ),
         centerTitle: true,
         elevation: 4.0,
         backgroundColor: AppColors.secondary,
         actions: [
-          IconButton(
-            onPressed: _historial,
-            icon: const Icon(Icons.notifications_active),
-          ),
-          
+          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
         ],
       ),
-      drawer: CustomDrawer(),
-      
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-            const Color.fromARGB(255,244,253,234),
-            const Color.fromARGB(255,216,255,172),
-            const Color.fromARGB(255,187,255,110),
-            const Color.fromARGB(255,133,248,2),
-            ]
-            ),
-        ),
-
-        child:   Center(
+        color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Column(
-                children: [
-                 CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.blueGrey[100],
-                    child: Icon(Icons.person,
-                    size: 50,
-                    color: Colors.blueAccent[150],
-                    ),
-                    
-                 ),
-                  TextField(
-                    controller: _name,
-                    decoration: InputDecoration(
-                      labelText: 'Nombre',
-                      hintText: 'Jose Alvarado',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      icon: Icon(Icons.person_2_outlined),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
+              // Espacio para el banner
+              Container(
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  image: DecorationImage(
+                    image: AssetImage('assets/logo.png'),
+                    fit: BoxFit.cover,
                   ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: _id,
-                    decoration: InputDecoration(
-                        labelText: 'Cuenta',
-                        hintText: '0000200500000',
+                ),
+              ),
+              SizedBox(height: 20),
+              // Formulario
+              Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                //text box del nombre
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextField(
+                      controller: _name,
+                      decoration: InputDecoration(
+                        labelText: 'Nombre',
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        icon: Icon(Icons.account_circle_outlined),
-                        filled: true,
-                      fillColor: Colors.white,
-                        ),
-                        
-
-                    //Button for Mark
-                    keyboardType: TextInputType.number,
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: _marcaEntrada,
-                    child: Text('Marcar Entrada'),
-                  ),
-                  SizedBox(height: 15),
-                  ElevatedButton(
-                      onPressed: _marcaSalida, 
-                      child: Text('Marcar Salida')
                       ),
-                  SizedBox(height: 10),
-                  if (_entrada != null)
-                    Text(
-                      'Hora de entrada $_entrada',
-                      style: TextStyle(fontSize: 15),
                     ),
-                  if (_salida != null)
-                    Text(
-                      'Hora de salida $_salida',
-                      style: TextStyle(fontSize: 15),
+                    SizedBox(height: 10),
+                    //textbox de la identidad
+                    TextField(
+                      controller: _id,
+                      decoration: InputDecoration(
+                        labelText: 'Número de Identidad',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
                     ),
+                    //boton para marcar entrada
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _entradas,
+                      child: Text('Marcar Entrada'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue[50],
+                      ),
+                    ),
+
+                    //boton para marcar salida
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _salidas,
+                      child: Text('Marcar Salida'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue[50],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Spacer(), //los botones se undan
+              //boton que muestra el historial de entrada
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Botón de información de entrada
+                  ElevatedButton.icon(
+                    onPressed: _infoentrada,
+                    icon: Icon(Icons.add_circle_outlined, size: 20),
+                    label: Text('Entrada'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                  ),
+                  // Botón de que muestra el historial de salida
+                  ElevatedButton.icon(
+                    onPressed: _infosalida,
+                    icon: Icon(Icons.remove_circle, size: 20),
+                    label: Text('Salida'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
       ),
-      ),
-      
-     
     );
   }
 }

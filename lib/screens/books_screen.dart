@@ -24,8 +24,8 @@ class _BooksScreenState extends State<BooksScreen> {
     final authorController = TextEditingController();
     final categoryController = TextEditingController();
     final descriptionController = TextEditingController();
-    final imageUrlController = TextEditingController();
-    final availableController = TextEditingController();
+    final stockController = TextEditingController();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
@@ -38,36 +38,67 @@ class _BooksScreenState extends State<BooksScreen> {
           style: TextStyle(color: AppColors.primary),
         ),
         content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Título'),
-              ),
-              TextField(
-                controller: authorController,
-                decoration: const InputDecoration(labelText: 'Autor'),
-              ),
-              TextField(
-                controller: categoryController,
-                decoration: const InputDecoration(labelText: 'Categoría'),
-              ),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Descripción'),
-              ),
-              TextField(
-                controller: imageUrlController,
-                decoration:
-                    const InputDecoration(labelText: 'URL de la Imagen'),
-              ),
-              TextField(
-                controller: availableController,
-                decoration: const InputDecoration(labelText: 'Disponibles'),
-                keyboardType: TextInputType.number,
-              ),
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: titleController,
+                  decoration: const InputDecoration(labelText: 'Título'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese un título';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: authorController,
+                  decoration: const InputDecoration(labelText: 'Autor'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese un autor';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: categoryController,
+                  decoration: const InputDecoration(labelText: 'Categoría'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese una categoría';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(labelText: 'Descripción'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese una descripción';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: stockController,
+                  decoration: const InputDecoration(labelText: 'Disponibles'),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese la cantidad disponible';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Por favor, ingrese un número válido';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -77,27 +108,28 @@ class _BooksScreenState extends State<BooksScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              final newBook = {
-                'title': titleController.text,
-                'author': authorController.text,
-                'category': categoryController.text,
-                'description': descriptionController.text,
-                'image': imageUrlController.text,
-                'available': int.tryParse(availableController.text) ?? 0,
-              };
+              if (_formKey.currentState!.validate()) {
+                final newBook = {
+                  'title': titleController.text,
+                  'author': authorController.text,
+                  'category': categoryController.text,
+                  'description': descriptionController.text,
+                  'stock': int.tryParse(stockController.text) ?? 0,
+                };
 
-              setState(() {
-                books.add(newBook);
-              });
+                setState(() {
+                  books.add(newBook);
+                });
 
-              Navigator.of(context).pop(); // Cierra el diálogo
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Libro agregado exitosamente'),
-                  backgroundColor: Colors.green,
-                  duration: const Duration(seconds: 3),
-                ),
-              );
+                Navigator.of(context).pop(); // Cierra el diálogo
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Libro agregado exitosamente'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
             },
             child: const Text('Agregar'),
           ),
@@ -129,29 +161,20 @@ class _BooksScreenState extends State<BooksScreen> {
           children: [
             Icon(Icons.book, size: 28),
             SizedBox(width: 5),
-            Text(
-              'Libros',
-              style: TextStyle(fontSize: 25),
-            ),
+            Text('Libros', style: TextStyle(fontSize: 25)),
           ],
         ),
         centerTitle: true,
         elevation: 4.0,
         backgroundColor: AppColors.secondary,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.settings),
-          ),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
         ],
       ),
       drawer: CustomDrawer(),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -163,7 +186,7 @@ class _BooksScreenState extends State<BooksScreen> {
               },
               decoration: InputDecoration(
                 hintText: 'Buscar libros...',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -234,8 +257,7 @@ class _BooksScreenState extends State<BooksScreen> {
                           author: book['author']!,
                           category: book['category']!,
                           description: book['description']!,
-                          image: book['image']!,
-                          available: book['available']!,
+                          stock: book['stock']!,
                         );
                       }).toList(),
                     )

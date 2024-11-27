@@ -8,13 +8,13 @@ class ReturnsScreen extends StatefulWidget {
 }
 
 class _ReturnsScreenState extends State<ReturnsScreen> {
-  final _formKey = GlobalKey<FormState>(); // Llave para manejar el formulario
+  final _formKey = GlobalKey<FormState>();
   final _bookIdController = TextEditingController();
   final _bookNameController = TextEditingController();
   final _studentIdController = TextEditingController();
   final _studentNameController = TextEditingController();
-  final _dueDateController = TextEditingController();
 
+  String? _dueDate; // Almacena la fecha seleccionada
   String _bookCondition = "Buenas Condiciones"; // Estado inicial del libro
   final double _finePerDay = 10.0; // Multa por día de retraso en lempiras
 
@@ -53,9 +53,9 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   }
 
   void _addReturn() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && _dueDate != null) {
       final returnDate = DateTime.now().toString().split(' ')[0];
-      final fine = _calculateFine(_dueDateController.text, returnDate);
+      final fine = _calculateFine(_dueDate!, returnDate);
 
       setState(() {
         _returnsList.add({
@@ -64,7 +64,7 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
           'studentId': _studentIdController.text,
           'studentName': _studentNameController.text,
           'returnDate': returnDate,
-          'dueDate': _dueDateController.text,
+          'dueDate': _dueDate,
           'condition': _bookCondition,
           'fine': fine,
         });
@@ -73,8 +73,27 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
         _bookNameController.clear();
         _studentIdController.clear();
         _studentNameController.clear();
-        _dueDateController.clear();
+        _dueDate = null;
         _bookCondition = "Buenas Condiciones";
+      });
+    } else if (_dueDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, selecciona la fecha límite')),
+      );
+    }
+  }
+
+  Future<void> _selectDueDate() async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        _dueDate =
+            pickedDate.toIso8601String().split('T')[0]; // Formato YYYY-MM-DD
       });
     }
   }
@@ -105,132 +124,172 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey, // Vincula el formulario con su llave
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Registrar Devolución',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Registrar Devolución',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
                 ),
-                const SizedBox(height: 10),
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+              ),
+              const SizedBox(height: 10),
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
                     child: Column(
                       children: [
-                        TextFormField(
-                          controller: _bookIdController,
-                          decoration: InputDecoration(
-                            labelText: 'ID del Libro',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _bookIdController,
+                                decoration: InputDecoration(
+                                  labelText: 'ID del Libro',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Por favor, ingresa el ID del Libro';
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor, ingresa el ID del Libro';
-                            }
-                            return null;
-                          },
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _bookNameController,
+                                decoration: InputDecoration(
+                                  labelText: 'Nombre del Libro',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Por favor, ingresa el Nombre del Libro';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 10),
-                        TextFormField(
-                          controller: _bookNameController,
-                          decoration: InputDecoration(
-                            labelText: 'Nombre del Libro',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _studentIdController,
+                                decoration: InputDecoration(
+                                  labelText: 'Número de Cuenta',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Por favor, ingresa el Número de Cuenta';
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor, ingresa el Nombre del Libro';
-                            }
-                            return null;
-                          },
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _studentNameController,
+                                decoration: InputDecoration(
+                                  labelText: 'Nombre del Estudiante',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Por favor, ingresa el Nombre del Estudiante';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 10),
-                        TextFormField(
-                          controller: _studentIdController,
-                          decoration: InputDecoration(
-                            labelText: 'Número de Cuenta del Estudiante',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: _selectDueDate,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 14, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        _dueDate ?? 'Fecha Límite',
+                                        style: TextStyle(
+                                          color: _dueDate == null
+                                              ? Colors.grey
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                      Icon(Icons.calendar_today,
+                                          color: AppColors.primary),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor, ingresa el Número de Cuenta';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          controller: _studentNameController,
-                          decoration: InputDecoration(
-                            labelText: 'Nombre del Estudiante',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                value: _bookCondition,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _bookCondition = value!;
+                                  });
+                                },
+                                isExpanded: true,
+                                items: [
+                                  'Buenas Condiciones',
+                                  'Condiciones Reparables',
+                                  'Condiciones Irreparables'
+                                ]
+                                    .map((condition) => DropdownMenuItem(
+                                          value: condition,
+                                          child: Text(
+                                            condition,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ))
+                                    .toList(),
+                                decoration: InputDecoration(
+                                  labelText: 'Estado del Libro',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor, ingresa el Nombre del Estudiante';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          controller: _dueDateController,
-                          decoration: InputDecoration(
-                            labelText: 'Fecha Límite (Y-M-D)',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor, ingresa la Fecha Límite';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 10),
-                        DropdownButtonFormField<String>(
-                          value: _bookCondition,
-                          onChanged: (value) {
-                            setState(() {
-                              _bookCondition = value!;
-                            });
-                          },
-                          items: [
-                            'Buenas Condiciones',
-                            'Condiciones Reparables',
-                            'Condiciones Irreparables'
-                          ]
-                              .map((condition) => DropdownMenuItem(
-                                    value: condition,
-                                    child: Text(condition),
-                                  ))
-                              .toList(),
-                          decoration: InputDecoration(
-                            labelText: 'Estado del Libro',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
+                          ],
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton.icon(
@@ -250,54 +309,49 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Divider(height: 20, thickness: 2),
-                const Text(
-                  'Historial de Devoluciones',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Historial de Devoluciones',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
                 ),
-                const SizedBox(height: 10),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _returnsList.length,
-                  itemBuilder: (context, index) {
-                    final returnItem = _returnsList[index];
-                    return Card(
-                      elevation: 3,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+              ),
+              const SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _returnsList.length,
+                itemBuilder: (context, index) {
+                  final returnItem = _returnsList[index];
+                  return Card(
+                    elevation: 4,
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    child: ListTile(
+                      title: Text(returnItem['bookName']),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              'Estudiante: ${returnItem['studentName']} (ID: ${returnItem['studentId']})\n'
+                              'Fecha Límite: ${returnItem['dueDate']}, Devuelto: ${returnItem['returnDate']}'),
+                          Text('Multa: L.${returnItem['fine']}'),
+                          Text(
+                            'Estado: ${returnItem['condition']}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                      child: ListTile(
-                        leading:
-                            const Icon(Icons.book, color: AppColors.primary),
-                        title: Text('Libro: ${returnItem['bookName']}'),
-                        subtitle: Text(
-                            'Estudiante: ${returnItem['studentName']}\nMulta: L ${returnItem['fine'].toStringAsFixed(2)}'),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _bookIdController.dispose();
-    _bookNameController.dispose();
-    _studentIdController.dispose();
-    _studentNameController.dispose();
-    _dueDateController.dispose();
-    super.dispose();
   }
 }
