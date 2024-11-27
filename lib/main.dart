@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         '/books': (context) => BooksScreen(),
         '/loans': (context) => LoansScreen(),
         '/returns': (context) => ReturnsScreen(),
-        '/attendances': (context) => Attendance(),
+        '/attendances': (context) => AttendanceScreen(),
         '/register': (context) => SignUpScreen(),
       },
     );
